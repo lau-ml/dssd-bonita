@@ -285,7 +285,7 @@
           <dynamicDescription xmi:type="expression:Expression" xmi:id="_nEAA0GxtEe-91ZaA1feApw" name="" content="" returnTypeFixed="true"/>
           <stepSummary xmi:type="expression:Expression" xmi:id="_nEAA0mxtEe-91ZaA1feApw" name="" content="" returnTypeFixed="true"/>
         </elements>
-        <elements xmi:type="process:ServiceTask" xmi:id="_uQZ9IGxtEe-91ZaA1feApw" name="Registrar como contacto" outgoing="_2UmdEGxtEe-91ZaA1feApw" incoming="_uQbLQGxtEe-91ZaA1feApw">
+        <elements xmi:type="process:ServiceTask" xmi:id="_uQZ9IGxtEe-91ZaA1feApw" name="Solicitar registro como contacto" outgoing="_2UmdEGxtEe-91ZaA1feApw" incoming="_uQbLQGxtEe-91ZaA1feApw">
           <dynamicLabel xmi:type="expression:Expression" xmi:id="_uQakMWxtEe-91ZaA1feApw" name="" content="" returnTypeFixed="true"/>
           <dynamicDescription xmi:type="expression:Expression" xmi:id="_uQakMGxtEe-91ZaA1feApw" name="" content="" returnTypeFixed="true"/>
           <stepSummary xmi:type="expression:Expression" xmi:id="_uQakMmxtEe-91ZaA1feApw" name="" content="" returnTypeFixed="true"/>
@@ -551,7 +551,7 @@
               <children xmi:type="notation:DecorationNode" xmi:id="_16q6ImxtEe-91ZaA1feApw" type="5025">
                 <layoutConstraint xmi:type="notation:Location" xmi:id="_16q6I2xtEe-91ZaA1feApw" y="5"/>
               </children>
-              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_16q6IWxtEe-91ZaA1feApw" x="3523" y="510"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_16q6IWxtEe-91ZaA1feApw" x="3551" y="534"/>
             </children>
             <children xmi:type="notation:Shape" xmi:id="_33Fjg2xtEe-91ZaA1feApw" type="3003" element="_33E8cGxtEe-91ZaA1feApw" fontName="Segoe UI">
               <children xmi:type="notation:DecorationNode" xmi:id="_33GKkGxtEe-91ZaA1feApw" type="5025">
@@ -772,7 +772,7 @@
         <layoutConstraint xmi:type="notation:Location" xmi:id="_2UnEJGxtEe-91ZaA1feApw" y="-10"/>
       </children>
       <styles xmi:type="notation:FontStyle" xmi:id="_2UnEIWxtEe-91ZaA1feApw" fontName="Segoe UI"/>
-      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_2UnEImxtEe-91ZaA1feApw" points="[0, 0, -226, -37]$[211, 37, -15, 0]"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_2UnEImxtEe-91ZaA1feApw" points="[0, 14, -250, 23]$[250, 14, 0, 23]$[250, 5, 0, 14]"/>
       <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_2UoSQGxtEe-91ZaA1feApw" id="(1.0,0.32941176470588235)"/>
     </edges>
     <edges xmi:type="notation:Connector" xmi:id="_4uK8gGxtEe-91ZaA1feApw" type="4001" element="_4uKVcGxtEe-91ZaA1feApw" source="_yCbIKGxrEe-91ZaA1feApw" target="_33Fjg2xtEe-91ZaA1feApw" roundedBendpointsRadius="10" routing="Rectilinear">
