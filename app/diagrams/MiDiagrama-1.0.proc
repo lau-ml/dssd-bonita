@@ -147,7 +147,7 @@
       </searchIndexes>
     </elements>
     <elements xmi:type="process:Pool" xmi:id="_Z8dscGu1Ee-Ol4J0NeesGQ" name="Proceso de recolección y recepción de materiales">
-      <elements xmi:type="process:Lane" xmi:id="_qiwiwGvVEe-91ZaA1feApw" name="Lane2">
+      <elements xmi:type="process:Lane" xmi:id="_qiwiwGvVEe-91ZaA1feApw" name="Recolector">
         <elements xmi:type="process:Task" xmi:id="_cQdIUGu1Ee-Ol4J0NeesGQ" name="Cargar materiales recolectados" outgoing="_j2D84Gu3Ee-Ol4J0NeesGQ" incoming="_imUH0GxdEe-91ZaA1feApw" actor="_cQY26Gu1Ee-Ol4J0NeesGQ">
           <dynamicLabel xmi:type="expression:Expression" xmi:id="_cQdIUWu1Ee-Ol4J0NeesGQ" name="" content="" returnTypeFixed="true"/>
           <dynamicDescription xmi:type="expression:Expression" xmi:id="_cQdIUmu1Ee-Ol4J0NeesGQ" name="" content="" returnTypeFixed="true"/>
@@ -169,7 +169,7 @@
           <stepSummary xmi:type="expression:Expression" xmi:id="_iAZ-Y2xdEe-91ZaA1feApw" name="" content="" returnTypeFixed="true"/>
         </elements>
       </elements>
-      <elements xmi:type="process:Lane" xmi:id="_wfow4GvVEe-91ZaA1feApw" name="Lane3">
+      <elements xmi:type="process:Lane" xmi:id="_wfow4GvVEe-91ZaA1feApw" name="Empleado">
         <elements xmi:type="process:XORGateway" xmi:id="_RCxnkGu4Ee-Ol4J0NeesGQ" name="Cumple cantidades" outgoing="_joJzwGxnEe-91ZaA1feApw _pNhg0GxnEe-91ZaA1feApw" incoming="_fSLEQGxiEe-91ZaA1feApw">
           <dynamicLabel xmi:type="expression:Expression" xmi:id="_RCxnkmu4Ee-Ol4J0NeesGQ" name="" content="" returnTypeFixed="true"/>
           <dynamicDescription xmi:type="expression:Expression" xmi:id="_RCxnkWu4Ee-Ol4J0NeesGQ" name="" content="" returnTypeFixed="true"/>
