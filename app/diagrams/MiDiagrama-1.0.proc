@@ -294,7 +294,7 @@
     </elements>
     <elements xmi:type="process:Pool" xmi:id="_DmvBsGyTEe-hZcn4ztgT_Q" name="Procesamiento de órdenes y pedidos">
       <elements xmi:type="process:Lane" xmi:id="_VVjz4GyTEe-hZcn4ztgT_Q" name="Área administrativa red global" actor="_SgfEMGyTEe-hZcn4ztgT_Q">
-        <elements xmi:type="process:XORGateway" xmi:id="_rkCoQGyTEe-hZcn4ztgT_Q" name="Copy of Gateway3" outgoing="_rkEdeGyTEe-hZcn4ztgT_Q _rkFEh2yTEe-hZcn4ztgT_Q" incoming="_rkFrmWyTEe-hZcn4ztgT_Q">
+        <elements xmi:type="process:XORGateway" xmi:id="_rkCoQGyTEe-hZcn4ztgT_Q" name="es primera vez" outgoing="_rkEdeGyTEe-hZcn4ztgT_Q _rkFEh2yTEe-hZcn4ztgT_Q" incoming="_rkFrmWyTEe-hZcn4ztgT_Q">
           <dynamicLabel xmi:type="expression:Expression" xmi:id="_rkCoQWyTEe-hZcn4ztgT_Q" name="" content="" returnTypeFixed="true"/>
           <dynamicDescription xmi:type="expression:Expression" xmi:id="_rkCoQmyTEe-hZcn4ztgT_Q" name="" content="" returnTypeFixed="true"/>
           <stepSummary xmi:type="expression:Expression" xmi:id="_rkCoQ2yTEe-hZcn4ztgT_Q" name="" content="" returnTypeFixed="true"/>
