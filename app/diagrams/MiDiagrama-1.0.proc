@@ -35,7 +35,7 @@
           <dynamicDescription xmi:type="expression:Expression" xmi:id="_vYXicWu3Ee-Ol4J0NeesGQ" name="" content="" returnTypeFixed="true"/>
           <stepSummary xmi:type="expression:Expression" xmi:id="_vYYJgWu3Ee-Ol4J0NeesGQ" name="" content="" returnTypeFixed="true"/>
         </elements>
-        <elements xmi:type="process:Task" xmi:id="_hMG4EGu3Ee-Ol4J0NeesGQ" name="Selección orden de recolección" outgoing="_fqJRoGxdEe-91ZaA1feApw" incoming="_j2D84Gu3Ee-Ol4J0NeesGQ" actor="_HJMlQGu2Ee-Ol4J0NeesGQ">
+        <elements xmi:type="process:Task" xmi:id="_hMG4EGu3Ee-Ol4J0NeesGQ" name="Selección orden de recolección" outgoing="_fqJRoGxdEe-91ZaA1feApw" incoming="_j2D84Gu3Ee-Ol4J0NeesGQ" actor="_IghKAHFHEe-r3vwm5acMWw">
           <dynamicLabel xmi:type="expression:Expression" xmi:id="_hMG4EWu3Ee-Ol4J0NeesGQ" name="" content="" returnTypeFixed="true"/>
           <dynamicDescription xmi:type="expression:Expression" xmi:id="_hMG4Emu3Ee-Ol4J0NeesGQ" name="" content="" returnTypeFixed="true"/>
           <stepSummary xmi:type="expression:Expression" xmi:id="_hMG4E2u3Ee-Ol4J0NeesGQ" name="" content="" returnTypeFixed="true"/>
@@ -65,7 +65,7 @@
           <dynamicDescription xmi:type="expression:Expression" xmi:id="_gXd9AWvhEe-91ZaA1feApw" name="" content="" returnTypeFixed="true"/>
           <stepSummary xmi:type="expression:Expression" xmi:id="_gXd9A2vhEe-91ZaA1feApw" name="" content="" returnTypeFixed="true"/>
         </elements>
-        <elements xmi:type="process:Task" xmi:id="_RU6NQGxkEe-91ZaA1feApw" name="Cargar cantidades recibidas" outgoing="_Wi1qsGxkEe-91ZaA1feApw" incoming="_fqJRoGxdEe-91ZaA1feApw" actor="_HJMlQGu2Ee-Ol4J0NeesGQ">
+        <elements xmi:type="process:Task" xmi:id="_RU6NQGxkEe-91ZaA1feApw" name="Cargar cantidades recibidas" outgoing="_Wi1qsGxkEe-91ZaA1feApw" incoming="_fqJRoGxdEe-91ZaA1feApw" actor="_IghKAHFHEe-r3vwm5acMWw">
           <dynamicLabel xmi:type="expression:Expression" xmi:id="_RU6NQmxkEe-91ZaA1feApw" name="" content="" returnTypeFixed="true"/>
           <dynamicDescription xmi:type="expression:Expression" xmi:id="_RU6NQWxkEe-91ZaA1feApw" name="" content="" returnTypeFixed="true"/>
           <stepSummary xmi:type="expression:Expression" xmi:id="_RU6NQ2xkEe-91ZaA1feApw" name="" content="" returnTypeFixed="true"/>
@@ -344,6 +344,7 @@
       </connections>
       <actors xmi:type="process:Actor" xmi:id="_cQY26Gu1Ee-Ol4J0NeesGQ" name="Recolector"/>
       <actors xmi:type="process:Actor" xmi:id="_HJMlQGu2Ee-Ol4J0NeesGQ" name="Empleado"/>
+      <actors xmi:type="process:Actor" xmi:id="_IghKAHFHEe-r3vwm5acMWw" name="Personal operativo"/>
       <contract xmi:type="process:Contract" xmi:id="_Z8eTk2u1Ee-Ol4J0NeesGQ"/>
       <searchIndexes xmi:type="process:SearchIndex" xmi:id="_Z8eTgGu1Ee-Ol4J0NeesGQ">
         <name xmi:type="expression:Expression" xmi:id="_Z8eTgWu1Ee-Ol4J0NeesGQ" content="" returnTypeFixed="true"/>
