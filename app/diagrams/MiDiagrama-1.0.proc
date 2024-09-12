@@ -884,7 +884,7 @@
             </children>
             <children xmi:type="notation:Shape" xmi:id="_nwuysGxnEe-91ZaA1feApw" type="3027" element="_nwuLoGxnEe-91ZaA1feApw" fontName="Segoe UI" fillColor="14334392" lineColor="10710316">
               <children xmi:type="notation:DecorationNode" xmi:id="_nwvZwGxnEe-91ZaA1feApw" type="5017"/>
-              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_nwuysWxnEe-91ZaA1feApw" x="1953" y="254" width="120" height="60"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_nwuysWxnEe-91ZaA1feApw" x="1953" y="254" width="160" height="80"/>
             </children>
             <children xmi:type="notation:Shape" xmi:id="_dw0QIGxrEe-91ZaA1feApw" type="3003" element="_dwzCAGxrEe-91ZaA1feApw" fontName="Segoe UI">
               <children xmi:type="notation:DecorationNode" xmi:id="_dw03MGxrEe-91ZaA1feApw" type="5025">
