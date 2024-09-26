@@ -3,6 +3,9 @@
   <customUserInfoDefinitions/>
   <users>
     <user userName="walter.bates">
+      <firstName>Walter</firstName>
+      <lastName>Bates</lastName>
+      <manager></manager>
       <personalData/>
       <professionalData/>
       <password encrypted="false">bpm</password>
