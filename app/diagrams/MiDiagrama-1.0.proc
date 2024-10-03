@@ -242,6 +242,9 @@
       <data xmi:type="process:Data" xmi:id="_j5xhAIEoEe-ZTrShX8xO-g" documentation="Representa al id del recolector de la orden" name="id_recolector" dataType="_TayIAWuQEe-OS9FyA9wSdA">
         <defaultValue xmi:type="expression:Expression" xmi:id="_j5xhAYEoEe-ZTrShX8xO-g" content=""/>
       </data>
+      <data xmi:type="process:Data" xmi:id="_SKB90IGhEe-RYosYx9pDiw" name="id_centro_recoleccion" dataType="_TayIAWuQEe-OS9FyA9wSdA">
+        <defaultValue xmi:type="expression:Expression" xmi:id="_SKB90YGhEe-RYosYx9pDiw" content=""/>
+      </data>
       <formMapping xmi:type="process:FormMapping" xmi:id="_Z8eTj2u1Ee-Ol4J0NeesGQ">
         <targetForm xmi:type="expression:Expression" xmi:id="_PRvIAIESEe-ZTrShX8xO-g" name="" content="" type="FORM_REFERENCE_TYPE" returnTypeFixed="true"/>
       </formMapping>
