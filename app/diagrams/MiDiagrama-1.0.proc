@@ -236,11 +236,14 @@
       <data xmi:type="process:Data" xmi:id="_aOl_0H0wEe-5lt-2eJjW6w" documentation="Identifica el registro de recolección" name="registro_recoleccion_id" dataType="_TayIAWuQEe-OS9FyA9wSdA">
         <defaultValue xmi:type="expression:Expression" xmi:id="_aOmm4H0wEe-5lt-2eJjW6w" content=""/>
       </data>
-      <data xmi:type="process:Data" xmi:id="_j4mvEID2Ee-ZTrShX8xO-g" documentation="El estado de recolección puede estar en cargando, cancelar y confirmar" name="estado_recoleccion" dataType="_TayIAWuQEe-OS9FyA9wSdA">
+      <data xmi:type="process:Data" xmi:id="_j4mvEID2Ee-ZTrShX8xO-g" documentation="El estado de recolección puede estar en cargar, cancelar y confirmar" name="estado_recoleccion" dataType="_TayIAWuQEe-OS9FyA9wSdA">
         <defaultValue xmi:type="expression:Expression" xmi:id="_j4mvEYD2Ee-ZTrShX8xO-g" content=""/>
       </data>
+      <data xmi:type="process:Data" xmi:id="_j5xhAIEoEe-ZTrShX8xO-g" documentation="Representa al id del recolector de la orden" name="id_recolector" dataType="_TayIAWuQEe-OS9FyA9wSdA">
+        <defaultValue xmi:type="expression:Expression" xmi:id="_j5xhAYEoEe-ZTrShX8xO-g" content=""/>
+      </data>
       <formMapping xmi:type="process:FormMapping" xmi:id="_Z8eTj2u1Ee-Ol4J0NeesGQ">
-        <targetForm xmi:type="expression:Expression" xmi:id="_wekxEID2Ee-ZTrShX8xO-g" name="" content="" type="FORM_REFERENCE_TYPE" returnTypeFixed="true"/>
+        <targetForm xmi:type="expression:Expression" xmi:id="_PRvIAIESEe-ZTrShX8xO-g" name="" content="" type="FORM_REFERENCE_TYPE" returnTypeFixed="true"/>
       </formMapping>
       <overviewFormMapping xmi:type="process:FormMapping" xmi:id="_Z8eTkWu1Ee-Ol4J0NeesGQ">
         <targetForm xmi:type="expression:Expression" xmi:id="_Z8eTkmu1Ee-Ol4J0NeesGQ" name="" content="" type="FORM_REFERENCE_TYPE" returnTypeFixed="true"/>
@@ -363,15 +366,21 @@
       </connections>
       <connections xmi:type="process:SequenceFlow" xmi:id="_gquwEH0gEe-5lt-2eJjW6w" name="no:continúa cargando materiales" target="_cQdIUGu1Ee-Ol4J0NeesGQ" source="_XCxXUH0gEe-5lt-2eJjW6w">
         <decisionTable xmi:type="decision:DecisionTable" xmi:id="_gqvXIH0gEe-5lt-2eJjW6w"/>
-        <condition xmi:type="expression:Expression" xmi:id="_gqvXIX0gEe-5lt-2eJjW6w" name="newScript()" content="true" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Boolean" returnTypeFixed="true"/>
+        <condition xmi:type="expression:Expression" xmi:id="_gqvXIX0gEe-5lt-2eJjW6w" name="newScript()" content="return estado_recoleccion==&quot;cargar&quot;" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Boolean" returnTypeFixed="true">
+          <referencedElements xmi:type="process:Data" xmi:id="_Lz6WQIESEe-ZTrShX8xO-g" documentation="El estado de recolección puede estar en cargar, cancelar y confirmar" name="estado_recoleccion" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+        </condition>
       </connections>
       <connections xmi:type="process:SequenceFlow" xmi:id="_rGngIH0gEe-5lt-2eJjW6w" name="sí:confirma registro" target="_RU6NQGxkEe-91ZaA1feApw" source="_XCxXUH0gEe-5lt-2eJjW6w">
         <decisionTable xmi:type="decision:DecisionTable" xmi:id="_rGngIX0gEe-5lt-2eJjW6w"/>
-        <condition xmi:type="expression:Expression" xmi:id="_rGngIn0gEe-5lt-2eJjW6w" name="newScript()" content="false" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Boolean" returnTypeFixed="true"/>
+        <condition xmi:type="expression:Expression" xmi:id="_rGngIn0gEe-5lt-2eJjW6w" name="newScript()" content="return estado_recoleccion==&quot;confirmar&quot;" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Boolean" returnTypeFixed="true">
+          <referencedElements xmi:type="process:Data" xmi:id="_MxVn0IESEe-ZTrShX8xO-g" documentation="El estado de recolección puede estar en cargar, cancelar y confirmar" name="estado_recoleccion" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+        </condition>
       </connections>
       <connections xmi:type="process:SequenceFlow" xmi:id="_s9SMMH0zEe-5lt-2eJjW6w" target="_s9Pv8H0zEe-5lt-2eJjW6w" source="_XCxXUH0gEe-5lt-2eJjW6w">
         <decisionTable xmi:type="decision:DecisionTable" xmi:id="_s9Zg8H0zEe-5lt-2eJjW6w"/>
-        <condition xmi:type="expression:Expression" xmi:id="_s9Zg8X0zEe-5lt-2eJjW6w" name="newScript()" content="false" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Boolean" returnTypeFixed="true"/>
+        <condition xmi:type="expression:Expression" xmi:id="_s9Zg8X0zEe-5lt-2eJjW6w" name="newScript()" content="return estado_recoleccion==&quot;cancelar&quot;" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Boolean" returnTypeFixed="true">
+          <referencedElements xmi:type="process:Data" xmi:id="_9xouUIEREe-ZTrShX8xO-g" documentation="El estado de recolección puede estar en cargando, cancelar y confirmar" name="estado_recoleccion" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+        </condition>
       </connections>
       <actors xmi:type="process:Actor" xmi:id="_cQY26Gu1Ee-Ol4J0NeesGQ" name="Recolector"/>
       <actors xmi:type="process:Actor" xmi:id="_HJMlQGu2Ee-Ol4J0NeesGQ" name="Empleado"/>
