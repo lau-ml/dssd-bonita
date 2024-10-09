@@ -245,7 +245,7 @@
       <data xmi:type="process:Data" xmi:id="_SKB90IGhEe-RYosYx9pDiw" name="id_centro_recoleccion" dataType="_TayIAWuQEe-OS9FyA9wSdA">
         <defaultValue xmi:type="expression:Expression" xmi:id="_SKB90YGhEe-RYosYx9pDiw" content=""/>
       </data>
-      <formMapping xmi:type="process:FormMapping" xmi:id="_Z8eTj2u1Ee-Ol4J0NeesGQ">
+      <formMapping xmi:type="process:FormMapping" xmi:id="_Z8eTj2u1Ee-Ol4J0NeesGQ" type="NONE">
         <targetForm xmi:type="expression:Expression" xmi:id="_PRvIAIESEe-ZTrShX8xO-g" name="" content="" type="FORM_REFERENCE_TYPE" returnTypeFixed="true"/>
       </formMapping>
       <overviewFormMapping xmi:type="process:FormMapping" xmi:id="_Z8eTkWu1Ee-Ol4J0NeesGQ">
