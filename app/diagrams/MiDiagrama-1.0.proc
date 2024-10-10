@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:decision="http://www.bonitasoft.org/ns/bpm/process/decision" xmlns:expression="http://www.bonitasoft.org/ns/bpm/expression" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.3/notation" xmlns:process="http://www.bonitasoft.org/ns/bpm/process">
+<xmi:XMI xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:actormapping="http://www.bonitasoft.org/ns/actormapping/6.0" xmlns:configuration="http://www.bonitasoft.org/ns/bpm/configuration" xmlns:decision="http://www.bonitasoft.org/ns/bpm/process/decision" xmlns:expression="http://www.bonitasoft.org/ns/bpm/expression" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.3/notation" xmlns:process="http://www.bonitasoft.org/ns/bpm/process">
   <process:MainProcess xmi:id="_Taxg4GuQEe-OS9FyA9wSdA" name="MiDiagrama" bonitaModelVersion="8">
     <elements xmi:type="process:Pool" xmi:id="_Z8dscGu1Ee-Ol4J0NeesGQ" name="Proceso de recolección y recepción de materiales">
       <elements xmi:type="process:Lane" xmi:id="_qiwiwGvVEe-91ZaA1feApw" name="Recolector" actor="_cQY26Gu1Ee-Ol4J0NeesGQ">
@@ -388,6 +388,33 @@
       <actors xmi:type="process:Actor" xmi:id="_cQY26Gu1Ee-Ol4J0NeesGQ" name="Recolector"/>
       <actors xmi:type="process:Actor" xmi:id="_HJMlQGu2Ee-Ol4J0NeesGQ" name="Empleado"/>
       <actors xmi:type="process:Actor" xmi:id="_IghKAHFHEe-r3vwm5acMWw" name="Personal operativo"/>
+      <configurations xmi:type="configuration:Configuration" xmi:id="_0dGsAIawEe-BgsRrlpE_zg" name="Production" version="8" username="walter.bates">
+        <actorMappings xmi:type="actormapping:ActorMappingsType" xmi:id="_0dQdAIawEe-BgsRrlpE_zg">
+          <actorMapping xmi:type="actormapping:ActorMapping" xmi:id="_0dQdAYawEe-BgsRrlpE_zg" name="Recolector">
+            <groups xmi:type="actormapping:Groups" xmi:id="_0dQdAoawEe-BgsRrlpE_zg"/>
+            <memberships xmi:type="actormapping:Membership" xmi:id="_0dQdA4awEe-BgsRrlpE_zg"/>
+            <roles xmi:type="actormapping:Roles" xmi:id="_0dQdBIawEe-BgsRrlpE_zg"/>
+            <users xmi:type="actormapping:Users" xmi:id="_0dQdBYawEe-BgsRrlpE_zg"/>
+          </actorMapping>
+          <actorMapping xmi:type="actormapping:ActorMapping" xmi:id="_0dQdBoawEe-BgsRrlpE_zg" name="Empleado">
+            <groups xmi:type="actormapping:Groups" xmi:id="_0dQdB4awEe-BgsRrlpE_zg"/>
+            <memberships xmi:type="actormapping:Membership" xmi:id="_0dQdCIawEe-BgsRrlpE_zg"/>
+            <roles xmi:type="actormapping:Roles" xmi:id="_0dQdCYawEe-BgsRrlpE_zg"/>
+            <users xmi:type="actormapping:Users" xmi:id="_0dQdCoawEe-BgsRrlpE_zg"/>
+          </actorMapping>
+          <actorMapping xmi:type="actormapping:ActorMapping" xmi:id="_0dQdC4awEe-BgsRrlpE_zg" name="Personal operativo">
+            <groups xmi:type="actormapping:Groups" xmi:id="_0dQdDIawEe-BgsRrlpE_zg"/>
+            <memberships xmi:type="actormapping:Membership" xmi:id="_0dQdDYawEe-BgsRrlpE_zg"/>
+            <roles xmi:type="actormapping:Roles" xmi:id="_0dQdDoawEe-BgsRrlpE_zg"/>
+            <users xmi:type="actormapping:Users" xmi:id="_0dQdD4awEe-BgsRrlpE_zg"/>
+          </actorMapping>
+        </actorMappings>
+        <processDependencies xmi:type="configuration:FragmentContainer" xmi:id="_0dGsAYawEe-BgsRrlpE_zg" id="CONNECTOR"/>
+        <processDependencies xmi:type="configuration:FragmentContainer" xmi:id="_0dGsAoawEe-BgsRrlpE_zg" id="GROOVY_SCRIPT"/>
+        <processDependencies xmi:type="configuration:FragmentContainer" xmi:id="_0dGsA4awEe-BgsRrlpE_zg" id="ACTOR_FILTER"/>
+        <processDependencies xmi:type="configuration:FragmentContainer" xmi:id="_0dGsBIawEe-BgsRrlpE_zg" id="OTHER"/>
+        <applicationDependencies xmi:type="configuration:FragmentContainer" xmi:id="_0dGsBYawEe-BgsRrlpE_zg" id="GROOVY_SCRIPT"/>
+      </configurations>
       <contract xmi:type="process:Contract" xmi:id="_Z8eTk2u1Ee-Ol4J0NeesGQ"/>
       <searchIndexes xmi:type="process:SearchIndex" xmi:id="_Z8eTgGu1Ee-Ol4J0NeesGQ">
         <name xmi:type="expression:Expression" xmi:id="_Z8eTgWu1Ee-Ol4J0NeesGQ" content="" returnTypeFixed="true"/>
