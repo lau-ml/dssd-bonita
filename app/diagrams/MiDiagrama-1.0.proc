@@ -397,6 +397,11 @@
           <cardinalityExpression xmi:type="expression:Expression" xmi:id="_COloYqc-Ee-226AfJcZHIQ" name="" content="" returnType="java.lang.Integer" returnTypeFixed="true"/>
           <iteratorExpression xmi:type="expression:Expression" xmi:id="_COloZKc-Ee-226AfJcZHIQ" name="ordenesIterador" content="ordenesIterador" type="MULTIINSTANCE_ITERATOR_TYPE" returnTypeFixed="true"/>
           <completionCondition xmi:type="expression:Expression" xmi:id="_COloY6c-Ee-226AfJcZHIQ" name="" content="" returnType="java.lang.Boolean" returnTypeFixed="true"/>
+          <inputMappings xmi:type="process:InputMapping" xmi:id="_KCyEkKy8Ee-xkecs5ObUNw" subprocessTarget="orden" assignationType="Data">
+            <processSource xmi:type="expression:Expression" xmi:id="_KCyEkay8Ee-xkecs5ObUNw" name="ordenesIterador" content="ordenesIterador" type="TYPE_VARIABLE">
+              <referencedElements xmi:type="process:Data" xmi:id="_LcmXMKy8Ee-xkecs5ObUNw" name="ordenesIterador" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+            </processSource>
+          </inputMappings>
           <calledActivityName xmi:type="expression:Expression" xmi:id="_COlBVKc-Ee-226AfJcZHIQ" name="Proceso de manejo de órdenes" content="Proceso de manejo de órdenes" returnTypeFixed="true"/>
           <calledActivityVersion xmi:type="expression:Expression" xmi:id="_COlBVac-Ee-226AfJcZHIQ" name="" content="" returnTypeFixed="true"/>
         </elements>
@@ -1053,10 +1058,10 @@
                 <expression xmi:type="expression:Expression" xmi:id="_ek7BSac9Ee-226AfJcZHIQ" returnType="java.util.List" returnTypeFixed="true"/>
               </parameters>
               <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_ek7BSqc9Ee-226AfJcZHIQ" key="fakeScriptExpression">
-                <expression xmi:type="expression:Expression" xmi:id="_ek7BS6c9Ee-226AfJcZHIQ" name="newScript()" content="import groovyx.net.http.RESTClient&#xD;&#xA;import groovyx.net.http.ContentType&#xD;&#xA;import groovy.json.JsonSlurper&#xD;&#xA;import groovy.json.JsonOutput&#xD;&#xA;&#xD;&#xA;// Definición de los clientes REST para ambas APIs&#xD;&#xA;def local = new RESTClient('http://host.docker.internal:8081/')&#xD;&#xA;def global = new RESTClient('http://host.docker.internal:8082/')&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;ordenes_creadas=[]&#xD;&#xA;&#xD;&#xA;// Autenticación en la API global&#xD;&#xA;def loginResponse&#xD;&#xA;try {&#xD;&#xA;&#x9;loginResponse = global.post(&#xD;&#xA;&#x9;&#x9;path: 'auth/login',&#xD;&#xA;&#x9;&#x9;body: [email: centro_mail, password: '123456'],&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON&#xD;&#xA;&#x9;)&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Error al intentar login en la API global: ${e.message}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Verificar si el login fue exitoso&#xD;&#xA;if (loginResponse.status != 200) {&#xD;&#xA;&#x9;println &quot;Error en login global: ${loginResponse.status}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Autenticación en la API local&#xD;&#xA;def response&#xD;&#xA;try {&#xD;&#xA;&#x9;response = local.post(&#xD;&#xA;&#x9;&#x9;path: 'auth/login',  // El endpoint de login&#xD;&#xA;&#x9;&#x9;body: [username: 'bonita', password: '123456'], // Datos de autenticación&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON  // Tipo de contenido de la solicitud&#xD;&#xA;&#x9;)&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Error al intentar login en la API local: ${e.message}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Verificar si el login fue exitoso&#xD;&#xA;if (response.status != 200) {&#xD;&#xA;&#x9;println &quot;Error en login local: ${response.status}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Procesar las órdenes que se van a enviar&#xD;&#xA;def lista_ordenes_mandar = reserva_materiales.collect { item ->&#xD;&#xA;&#x9;new JsonSlurper().parseText(item)&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;lista_ordenes_mandar.each { item ->&#xD;&#xA;&#x9;def token_global = loginResponse.data?.token&#xD;&#xA;&#x9;def token_local = response.data?.token&#xD;&#xA;&#x9;&#xD;&#xA;&#x9;// Verificar que los tokens no sean nulos&#xD;&#xA;&#x9;if (!token_global || !token_local) {&#xD;&#xA;&#x9;&#x9;println &quot;Error: no se obtuvo un token válido&quot;&#xD;&#xA;&#x9;&#x9;return&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;&#xD;&#xA;&#x9;def pedidoId = item.pedidoId&#xD;&#xA;&#x9;def cantidad = item.cantidad&#xD;&#xA;&#x9;&#xD;&#xA;&#x9;println(pedidoId)&#xD;&#xA;&#x9;println(cantidad)&#xD;&#xA;&#x9;// Crear la orden en la API global&#xD;&#xA;&#x9;def crearOrdenResponse&#xD;&#xA;&#x9;try {&#xD;&#xA;&#x9;&#x9;crearOrdenResponse = global.post(&#xD;&#xA;&#x9;&#x9;&#x9;path: 'api/ordenes/generate-order',&#xD;&#xA;&#x9;&#x9;&#x9;body: [pedidoId: pedidoId, cantidad: cantidad],&#xD;&#xA;&#x9;&#x9;&#x9;requestContentType: ContentType.JSON,&#xD;&#xA;&#x9;&#x9;&#x9;headers: ['Authorization': &quot;Bearer ${token_global}&quot;]&#xD;&#xA;&#x9;&#x9;)&#xD;&#xA;&#x9;} catch (Exception e) {&#xD;&#xA;&#x9;&#x9;println &quot;Error al crear orden en la API global: ${e.message}&quot;&#xD;&#xA;&#x9;&#x9;return&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;&#xD;&#xA;&#x9;// Verificar respuesta de la API global&#xD;&#xA;&#x9;if (crearOrdenResponse.status == 409) {&#xD;&#xA;&#x9;&#x9;println &quot;Conflicto al crear la orden en la API global. Llamando al endpoint local para agregar material.&quot;&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;def centroRecoleccionId = centroRecoleccionId // Asegúrate de tener este valor en el objeto item&#xD;&#xA;&#x9;&#x9;def materialId = item.materialId // Asegúrate de tener este valor en el objeto item&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;// Realizar la llamada para agregar material en la API local&#xD;&#xA;&#x9;&#x9;def agregarMaterialResponse&#xD;&#xA;&#x9;&#x9;try {&#xD;&#xA;&#x9;&#x9;&#x9;agregarMaterialResponse = local.post(&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;path: &quot;api/ordenes/agregar/${centroRecoleccionId}/${materialId}/${cantidad}&quot;,&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;requestContentType: ContentType.JSON,&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;headers: ['Authorization': &quot;Bearer ${token_local}&quot;]&#xD;&#xA;&#x9;&#x9;&#x9;)&#xD;&#xA;&#x9;&#x9;} catch (Exception e) {&#xD;&#xA;&#x9;&#x9;&#x9;println &quot;Error al intentar agregar material en la API local: ${e.message}&quot;&#xD;&#xA;&#x9;&#x9;&#x9;return&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;// Verificar la respuesta de la API local&#xD;&#xA;&#x9;&#x9;if (agregarMaterialResponse.status != 200) {&#xD;&#xA;&#x9;&#x9;&#x9;println &quot;Error al agregar material en la API local: ${agregarMaterialResponse.status}&quot;&#xD;&#xA;&#x9;&#x9;&#x9;return&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;println &quot;Material agregado exitosamente en la API local.&quot;&#xD;&#xA;&#x9;} else if (crearOrdenResponse.status == 200 || crearOrdenResponse.status == 201) {&#xD;&#xA;&#x9;&#x9;def orden = crearOrdenResponse.data&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;// Preparar datos para la orden local&#xD;&#xA;&#x9;&#x9;def ordenLocal = [:]&#xD;&#xA;&#x9;&#x9;ordenLocal.deposito = orden.deposito&#xD;&#xA;&#x9;&#x9;ordenLocal.cantidad = cantidad&#xD;&#xA;&#x9;&#x9;ordenLocal.materialId = orden.material.id&#xD;&#xA;&#x9;&#x9;ordenLocal.centroRecoleccionEmail = orden.centroDeRecepcion.email&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;println &quot;Datos enviados a la API local: ${JsonOutput.toJson(ordenLocal)}&quot;&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;// Crear la orden en la API local&#xD;&#xA;&#x9;&#x9;def crearOrdenLocalResponse&#xD;&#xA;&#x9;&#x9;try {&#xD;&#xA;&#x9;&#x9;&#x9;crearOrdenLocalResponse = local.post(&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;path: 'api/ordenes/crear',&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;body: JsonOutput.toJson(ordenLocal), // Convertir explícitamente el mapa a JSON&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;requestContentType: ContentType.JSON,&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;headers: ['Authorization': &quot;Bearer ${token_local}&quot;]&#xD;&#xA;&#x9;&#x9;&#x9;)&#xD;&#xA;&#x9;&#x9;} catch (Exception e) {&#xD;&#xA;&#x9;&#x9;&#x9;println &quot;Error al crear orden en la API local: ${e.message}&quot;&#xD;&#xA;&#x9;&#x9;&#x9;e.printStackTrace()&#xD;&#xA;&#x9;&#x9;&#x9;return&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;// Verificar respuesta de la API local&#xD;&#xA;&#x9;&#x9;if (crearOrdenLocalResponse?.status != 200) {&#xD;&#xA;&#x9;&#x9;&#x9;println &quot;Error al crear orden en API local: ${crearOrdenLocalResponse.status}&quot;&#xD;&#xA;&#x9;&#x9;&#x9;println &quot;Detalles de la respuesta: ${crearOrdenLocalResponse?.data}&quot;&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;def orden_a_concatenar=[:]&#xD;&#xA;&#x9;&#x9;orden_a_concatenar.idLocalOrden=crearOrdenLocalResponse.data.id&#xD;&#xA;&#x9;&#x9;orden_a_concatenar.estado=orden.estadoOrden&#xD;&#xA;&#x9;&#x9;orden_a_concatenar.idGlobalOrden=orden.id&#xD;&#xA;&#x9;&#x9;ordenes_creadas.add(orden_a_concatenar)&#xD;&#xA;&#x9;}&#xD;&#xA;}&#xD;&#xA;return JsonOutput.toJson(ordenes_creadas)" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Object" returnTypeFixed="true">
-                  <referencedElements xmi:type="process:Data" xmi:id="_uK-BEKx3Ee-BfLzTRkXieQ" name="reserva_materiales" multiple="true" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
-                  <referencedElements xmi:type="process:Data" xmi:id="_uK-BEax3Ee-BfLzTRkXieQ" name="centro_mail" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
-                  <referencedElements xmi:type="process:Data" xmi:id="_uK-BEqx3Ee-BfLzTRkXieQ" documentation="String que representa órdenes creadas por cada centro" name="ordenes_creadas" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+                <expression xmi:type="expression:Expression" xmi:id="_ek7BS6c9Ee-226AfJcZHIQ" name="newScript()" content="import groovyx.net.http.RESTClient&#xD;&#xA;import groovyx.net.http.ContentType&#xD;&#xA;import groovy.json.JsonSlurper&#xD;&#xA;import groovy.json.JsonOutput&#xD;&#xA;&#xD;&#xA;// Definición de los clientes REST para ambas APIs&#xD;&#xA;def local = new RESTClient('http://host.docker.internal:8081/')&#xD;&#xA;def global = new RESTClient('http://host.docker.internal:8082/')&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;ordenes_creadas=[]&#xD;&#xA;&#xD;&#xA;// Autenticación en la API global&#xD;&#xA;def loginResponse&#xD;&#xA;try {&#xD;&#xA;&#x9;loginResponse = global.post(&#xD;&#xA;&#x9;&#x9;path: 'auth/login',&#xD;&#xA;&#x9;&#x9;body: [email: centro_mail, password: '123456'],&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON&#xD;&#xA;&#x9;)&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Error al intentar login en la API global: ${e.message}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Verificar si el login fue exitoso&#xD;&#xA;if (loginResponse.status != 200) {&#xD;&#xA;&#x9;println &quot;Error en login global: ${loginResponse.status}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Autenticación en la API local&#xD;&#xA;def response&#xD;&#xA;try {&#xD;&#xA;&#x9;response = local.post(&#xD;&#xA;&#x9;&#x9;path: 'auth/login',  // El endpoint de login&#xD;&#xA;&#x9;&#x9;body: [username: 'bonita', password: '123456'], // Datos de autenticación&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON  // Tipo de contenido de la solicitud&#xD;&#xA;&#x9;)&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Error al intentar login en la API local: ${e.message}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Verificar si el login fue exitoso&#xD;&#xA;if (response.status != 200) {&#xD;&#xA;&#x9;println &quot;Error en login local: ${response.status}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Procesar las órdenes que se van a enviar&#xD;&#xA;def lista_ordenes_mandar = reserva_materiales.collect { item ->&#xD;&#xA;&#x9;new JsonSlurper().parseText(item)&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;lista_ordenes_mandar.each { item ->&#xD;&#xA;&#x9;def token_global = loginResponse.data?.token&#xD;&#xA;&#x9;def token_local = response.data?.token&#xD;&#xA;&#x9;&#xD;&#xA;&#x9;// Verificar que los tokens no sean nulos&#xD;&#xA;&#x9;if (!token_global || !token_local) {&#xD;&#xA;&#x9;&#x9;println &quot;Error: no se obtuvo un token válido&quot;&#xD;&#xA;&#x9;&#x9;return&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;&#xD;&#xA;&#x9;def pedidoId = item.pedidoId&#xD;&#xA;&#x9;def cantidad = item.cantidad&#xD;&#xA;&#x9;&#xD;&#xA;&#x9;println(pedidoId)&#xD;&#xA;&#x9;println(cantidad)&#xD;&#xA;&#x9;// Crear la orden en la API global&#xD;&#xA;&#x9;def crearOrdenResponse&#xD;&#xA;&#x9;try {&#xD;&#xA;&#x9;&#x9;crearOrdenResponse = global.post(&#xD;&#xA;&#x9;&#x9;&#x9;path: 'api/ordenes/generate-order',&#xD;&#xA;&#x9;&#x9;&#x9;body: [pedidoId: pedidoId, cantidad: cantidad],&#xD;&#xA;&#x9;&#x9;&#x9;requestContentType: ContentType.JSON,&#xD;&#xA;&#x9;&#x9;&#x9;headers: ['Authorization': &quot;Bearer ${token_global}&quot;]&#xD;&#xA;&#x9;&#x9;)&#xD;&#xA;&#x9;} catch (Exception e) {&#xD;&#xA;&#x9;&#x9;println &quot;Error al crear orden en la API global: ${e.message}&quot;&#xD;&#xA;&#x9;&#x9;return&#xD;&#xA;&#x9;}&#xD;&#xA;&#x9;&#xD;&#xA;&#x9;// Verificar respuesta de la API global&#xD;&#xA;&#x9;if (crearOrdenResponse.status == 409) {&#xD;&#xA;&#x9;&#x9;println &quot;Conflicto al crear la orden en la API global. Llamando al endpoint local para agregar material.&quot;&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;def centroRecoleccionId = centroRecoleccionId // Asegúrate de tener este valor en el objeto item&#xD;&#xA;&#x9;&#x9;def materialId = item.materialId // Asegúrate de tener este valor en el objeto item&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;// Realizar la llamada para agregar material en la API local&#xD;&#xA;&#x9;&#x9;def agregarMaterialResponse&#xD;&#xA;&#x9;&#x9;try {&#xD;&#xA;&#x9;&#x9;&#x9;agregarMaterialResponse = local.post(&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;path: &quot;api/ordenes/agregar/${centroRecoleccionId}/${materialId}/${cantidad}&quot;,&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;requestContentType: ContentType.JSON,&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;headers: ['Authorization': &quot;Bearer ${token_local}&quot;]&#xD;&#xA;&#x9;&#x9;&#x9;)&#xD;&#xA;&#x9;&#x9;} catch (Exception e) {&#xD;&#xA;&#x9;&#x9;&#x9;println &quot;Error al intentar agregar material en la API local: ${e.message}&quot;&#xD;&#xA;&#x9;&#x9;&#x9;return&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;// Verificar la respuesta de la API local&#xD;&#xA;&#x9;&#x9;if (agregarMaterialResponse.status != 200) {&#xD;&#xA;&#x9;&#x9;&#x9;println &quot;Error al agregar material en la API local: ${agregarMaterialResponse.status}&quot;&#xD;&#xA;&#x9;&#x9;&#x9;return&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;println &quot;Material agregado exitosamente en la API local.&quot;&#xD;&#xA;&#x9;} else if (crearOrdenResponse.status == 200 || crearOrdenResponse.status == 201) {&#xD;&#xA;&#x9;&#x9;def orden = crearOrdenResponse.data&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;// Preparar datos para la orden local&#xD;&#xA;&#x9;&#x9;def ordenLocal = [:]&#xD;&#xA;&#x9;&#x9;ordenLocal.deposito = orden.deposito&#xD;&#xA;&#x9;&#x9;ordenLocal.cantidad = cantidad&#xD;&#xA;&#x9;&#x9;ordenLocal.materialId = orden.material.id&#xD;&#xA;&#x9;&#x9;ordenLocal.centroRecoleccionEmail = orden.centroDeRecepcion.email&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;println &quot;Datos enviados a la API local: ${JsonOutput.toJson(ordenLocal)}&quot;&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;// Crear la orden en la API local&#xD;&#xA;&#x9;&#x9;def crearOrdenLocalResponse&#xD;&#xA;&#x9;&#x9;try {&#xD;&#xA;&#x9;&#x9;&#x9;crearOrdenLocalResponse = local.post(&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;path: 'api/ordenes/crear',&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;body: JsonOutput.toJson(ordenLocal), // Convertir explícitamente el mapa a JSON&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;requestContentType: ContentType.JSON,&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;headers: ['Authorization': &quot;Bearer ${token_local}&quot;]&#xD;&#xA;&#x9;&#x9;&#x9;)&#xD;&#xA;&#x9;&#x9;} catch (Exception e) {&#xD;&#xA;&#x9;&#x9;&#x9;println &quot;Error al crear orden en la API local: ${e.message}&quot;&#xD;&#xA;&#x9;&#x9;&#x9;e.printStackTrace()&#xD;&#xA;&#x9;&#x9;&#x9;return&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;// Verificar respuesta de la API local&#xD;&#xA;&#x9;&#x9;if (crearOrdenLocalResponse?.status != 200) {&#xD;&#xA;&#x9;&#x9;&#x9;println &quot;Error al crear orden en API local: ${crearOrdenLocalResponse.status}&quot;&#xD;&#xA;&#x9;&#x9;&#x9;println &quot;Detalles de la respuesta: ${crearOrdenLocalResponse?.data}&quot;&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;def orden_a_concatenar=[:]&#xD;&#xA;&#x9;&#x9;orden_a_concatenar.idLocalOrden=crearOrdenLocalResponse.data.id&#xD;&#xA;&#x9;&#x9;orden_a_concatenar.estado=orden.estadoOrden&#xD;&#xA;&#x9;&#x9;orden_a_concatenar.idGlobalOrden=orden.id&#xD;&#xA;&#x9;&#x9;orden_a_concatenar.mailCentro=orden.centroDeRecepcion.email&#xD;&#xA;&#x9;&#x9;ordenes_creadas.add(orden_a_concatenar)&#xD;&#xA;&#x9;}&#xD;&#xA;}&#xD;&#xA;return JsonOutput.toJson(ordenes_creadas)" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Object" returnTypeFixed="true">
+                  <referencedElements xmi:type="process:Data" xmi:id="_IUXhUKzEEe-xkecs5ObUNw" name="reserva_materiales" multiple="true" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+                  <referencedElements xmi:type="process:Data" xmi:id="_IUXhUazEEe-xkecs5ObUNw" name="centro_mail" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+                  <referencedElements xmi:type="process:Data" xmi:id="_IUXhUqzEEe-xkecs5ObUNw" documentation="String que representa órdenes creadas por cada centro" name="ordenes_creadas" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
                 </expression>
               </parameters>
             </configuration>
@@ -1210,13 +1215,18 @@
                 <expression xmi:type="expression:Expression" xmi:id="_zjrTKac9Ee-226AfJcZHIQ" returnType="java.util.List" returnTypeFixed="true"/>
               </parameters>
               <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_zjrTKqc9Ee-226AfJcZHIQ" key="fakeScriptExpression">
-                <expression xmi:type="expression:Expression" xmi:id="_zjrTK6c9Ee-226AfJcZHIQ" name="newScript()" content="true" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Object" returnTypeFixed="true"/>
+                <expression xmi:type="expression:Expression" xmi:id="_zjrTK6c9Ee-226AfJcZHIQ" name="newScript()" content="import groovyx.net.http.RESTClient&#xD;&#xA;import groovyx.net.http.ContentType&#xD;&#xA;import groovy.json.JsonSlurper&#xD;&#xA;import groovy.json.JsonOutput&#xD;&#xA;&#xD;&#xA;def estado_orden=''&#xD;&#xA;// Configuración del cliente REST&#xD;&#xA;def global = new RESTClient('http://host.docker.internal:8082/')&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;try {&#xD;&#xA;&#x9;// Realizar la solicitud de autenticación (login)&#xD;&#xA;&#x9;def loginResponse = global.post(&#xD;&#xA;&#x9;&#x9;path: 'auth/login',&#xD;&#xA;&#x9;&#x9;body: [email: mailCentro, password: '123456'],&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON&#xD;&#xA;&#x9;)&#xD;&#xA;&#xD;&#xA;&#x9;if (loginResponse.status == 200) {&#xD;&#xA;&#x9;&#x9;// Obtener el token de la respuesta&#xD;&#xA;&#x9;&#x9;String token = loginResponse.data?.token&#xD;&#xA;&#x9;&#x9;if (token) {&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;try {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;def getResponsOrders = global.get(&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;path: &quot;api/ordenes/my-orders&quot;,&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;query: [orderId: idOrdenGlobal],&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;headers: [Authorization: &quot;Bearer ${token}&quot;],&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;contentType: ContentType.JSON&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;if (getResponsOrders.status == 200 &amp;&amp; !getResponsOrders.data.isEmpty()) {&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;estado_orden=getResponsOrders.data[0].estadoOrden&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;} catch (Exception e) {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;println &quot;Error al consultar pedidos pendientes: ${e.message}&quot;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;return&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;}&#xD;&#xA;&#xD;&#xA;&#x9;&#x9;} else {&#xD;&#xA;&#x9;&#x9;&#x9;println &quot;Error: Token no recibido en la respuesta de login.&quot;&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;} else {&#xD;&#xA;&#x9;&#x9;println &quot;Error en login: Código ${loginResponse.status}, Respuesta: ${loginResponse.data}&quot;&#xD;&#xA;&#x9;}&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Ocurrió un error durante la autenticación o solicitud HTTP: &quot;&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;return estado_orden&#xD;&#xA;&#x9;&#x9;" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Object" returnTypeFixed="true">
+                  <referencedElements xmi:type="process:Data" xmi:id="_1qplcKzJEe-xkecs5ObUNw" name="idOrdenGlobal" dataType="_TayH_2uQEe-OS9FyA9wSdA"/>
+                  <referencedElements xmi:type="process:Data" xmi:id="_1qplcazJEe-xkecs5ObUNw" name="mailCentro" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+                </expression>
               </parameters>
             </configuration>
             <outputs xmi:type="expression:Operation" xmi:id="_zjrTLKc9Ee-226AfJcZHIQ">
-              <leftOperand xmi:type="expression:Expression" xmi:id="_zjrTLac9Ee-226AfJcZHIQ"/>
-              <rightOperand xmi:type="expression:Expression" xmi:id="_zjrTLqc9Ee-226AfJcZHIQ" name="result" content="result" type="CONNECTOR_OUTPUT_TYPE" returnType="java.lang.Object">
-                <referencedElements xmi:type="definition:Output" xmi:id="_zjrTL6c9Ee-226AfJcZHIQ" name="result" type="java.lang.Object"/>
+              <leftOperand xmi:type="expression:Expression" xmi:id="_zjrTLac9Ee-226AfJcZHIQ" name="estado" content="estado" type="TYPE_VARIABLE">
+                <referencedElements xmi:type="process:Data" xmi:id="_-1jk46zAEe-xkecs5ObUNw" name="estado" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+              </leftOperand>
+              <rightOperand xmi:type="expression:Expression" xmi:id="_zjrTLqc9Ee-226AfJcZHIQ" name="newScript()" content="result" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT">
+                <referencedElements xmi:type="definition:Output" xmi:id="_-1jk5KzAEe-xkecs5ObUNw" name="result" type="java.lang.Object"/>
               </rightOperand>
               <operator xmi:type="expression:Operator" xmi:id="_zjrTMKc9Ee-226AfJcZHIQ" type="ASSIGNMENT"/>
             </outputs>
@@ -1232,7 +1242,7 @@
           <dynamicDescription xmi:type="expression:Expression" xmi:id="_zjr6Mqc9Ee-226AfJcZHIQ" name="" content="" returnTypeFixed="true"/>
           <stepSummary xmi:type="expression:Expression" xmi:id="_zjr6M6c9Ee-226AfJcZHIQ" name="" content="" returnTypeFixed="true"/>
         </elements>
-        <elements xmi:type="process:EndEvent" xmi:id="_zjr6OKc9Ee-226AfJcZHIQ" name="fin_orden_distribución" incoming="_3Jb4AKgxEe-QYZ1QmhBlew">
+        <elements xmi:type="process:EndEvent" xmi:id="_zjr6OKc9Ee-226AfJcZHIQ" name="fin_orden_distribución" incoming="_8El4IKzLEe-xkecs5ObUNw">
           <dynamicLabel xmi:type="expression:Expression" xmi:id="_zjr6Oac9Ee-226AfJcZHIQ" name="" content="" returnTypeFixed="true"/>
           <dynamicDescription xmi:type="expression:Expression" xmi:id="_zjr6Oqc9Ee-226AfJcZHIQ" name="" content="" returnTypeFixed="true"/>
           <stepSummary xmi:type="expression:Expression" xmi:id="_zjr6O6c9Ee-226AfJcZHIQ" name="" content="" returnTypeFixed="true"/>
@@ -1250,13 +1260,18 @@
                 <expression xmi:type="expression:Expression" xmi:id="_TU1hVagzEe-QYZ1QmhBlew" returnType="java.util.List" returnTypeFixed="true"/>
               </parameters>
               <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_TU1hVqgzEe-QYZ1QmhBlew" key="fakeScriptExpression">
-                <expression xmi:type="expression:Expression" xmi:id="_TU1hV6gzEe-QYZ1QmhBlew" name="newScript()" content="true" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Object" returnTypeFixed="true"/>
+                <expression xmi:type="expression:Expression" xmi:id="_TU1hV6gzEe-QYZ1QmhBlew" name="newScript()" content="import groovyx.net.http.RESTClient&#xD;&#xA;import groovyx.net.http.ContentType&#xD;&#xA;import groovy.json.JsonSlurper&#xD;&#xA;import groovy.json.JsonOutput&#xD;&#xA;&#xD;&#xA;// Crear cliente REST&#xD;&#xA;def global = new RESTClient('http://host.docker.internal:8082/')&#xD;&#xA;def estadoVariable = &quot;&quot;&#xD;&#xA;&#xD;&#xA;// Realizar login y obtener el token&#xD;&#xA;def loginResponse&#xD;&#xA;try {&#xD;&#xA;&#x9;loginResponse = global.post(&#xD;&#xA;&#x9;&#x9;path: 'auth/login',&#xD;&#xA;&#x9;&#x9;body: [email: mailCentro, password: '123456'],&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON&#xD;&#xA;&#x9;)&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Error al intentar login en la API global: ${e.message}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;def token = loginResponse.data.token&#xD;&#xA;&#xD;&#xA;// Preparar la orden con el token obtenido&#xD;&#xA;def enviarResponse&#xD;&#xA;try {&#xD;&#xA;&#x9;enviarResponse = global.patch(&#xD;&#xA;&#x9;&#x9;path: &quot;api/ordenes/${idOrdenGlobal}/enviar&quot;,&#xD;&#xA;&#x9;&#x9;headers: [Authorization: &quot;Bearer ${token}&quot;],&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON&#xD;&#xA;&#x9;)&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Error al intentar marcar como enviada la orden: ${e.message}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Obtener el estado de la orden&#xD;&#xA;estadoVariable = enviarResponse.data.estadoOrden&#xD;&#xA;&#xD;&#xA;return estadoVariable&#xD;&#xA;" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Object" returnTypeFixed="true">
+                  <referencedElements xmi:type="process:Data" xmi:id="_UNAAkKziEe-xkecs5ObUNw" name="idOrdenGlobal" dataType="_TayH_2uQEe-OS9FyA9wSdA"/>
+                  <referencedElements xmi:type="process:Data" xmi:id="_UNAAkaziEe-xkecs5ObUNw" name="mailCentro" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+                </expression>
               </parameters>
             </configuration>
             <outputs xmi:type="expression:Operation" xmi:id="_TU1hWKgzEe-QYZ1QmhBlew">
-              <leftOperand xmi:type="expression:Expression" xmi:id="_TU1hWagzEe-QYZ1QmhBlew"/>
-              <rightOperand xmi:type="expression:Expression" xmi:id="_TU1hWqgzEe-QYZ1QmhBlew" name="result" content="result" type="CONNECTOR_OUTPUT_TYPE" returnType="java.lang.Object">
-                <referencedElements xmi:type="definition:Output" xmi:id="_TU1hW6gzEe-QYZ1QmhBlew" name="result" type="java.lang.Object"/>
+              <leftOperand xmi:type="expression:Expression" xmi:id="_TU1hWagzEe-QYZ1QmhBlew" name="estado" content="estado" type="TYPE_VARIABLE">
+                <referencedElements xmi:type="process:Data" xmi:id="_ZPiR4qzYEe-xkecs5ObUNw" name="estado" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+              </leftOperand>
+              <rightOperand xmi:type="expression:Expression" xmi:id="_TU1hWqgzEe-QYZ1QmhBlew" name="newScript()" content="result" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT">
+                <referencedElements xmi:type="definition:Output" xmi:id="_ZPiR46zYEe-xkecs5ObUNw" name="result" type="java.lang.Object"/>
               </rightOperand>
               <operator xmi:type="expression:Operator" xmi:id="_TU1hXKgzEe-QYZ1QmhBlew" type="ASSIGNMENT"/>
             </outputs>
@@ -1285,13 +1300,18 @@
                 <expression xmi:type="expression:Expression" xmi:id="_QYtudagzEe-QYZ1QmhBlew" returnType="java.util.List" returnTypeFixed="true"/>
               </parameters>
               <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_QYtudqgzEe-QYZ1QmhBlew" key="fakeScriptExpression">
-                <expression xmi:type="expression:Expression" xmi:id="_QYtud6gzEe-QYZ1QmhBlew" name="newScript()" content="true" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Object" returnTypeFixed="true"/>
+                <expression xmi:type="expression:Expression" xmi:id="_QYtud6gzEe-QYZ1QmhBlew" name="newScript()" content="import groovyx.net.http.RESTClient&#xD;&#xA;import groovyx.net.http.ContentType&#xD;&#xA;import groovy.json.JsonSlurper&#xD;&#xA;import groovy.json.JsonOutput&#xD;&#xA;&#xD;&#xA;// Crear cliente REST&#xD;&#xA;def global = new RESTClient('http://host.docker.internal:8082/')&#xD;&#xA;def estadoVariable = &quot;&quot;&#xD;&#xA;&#xD;&#xA;// Realizar login y obtener el token&#xD;&#xA;def loginResponse&#xD;&#xA;try {&#xD;&#xA;&#x9;loginResponse = global.post(&#xD;&#xA;&#x9;&#x9;path: 'auth/login',&#xD;&#xA;&#x9;&#x9;body: [email: mailCentro, password: '123456'],&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON&#xD;&#xA;&#x9;)&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Error al intentar login en la API global: ${e.message}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;def token = loginResponse.data.token&#xD;&#xA;&#xD;&#xA;// Preparar la orden con el token obtenido&#xD;&#xA;def prepararResponse&#xD;&#xA;try {&#xD;&#xA;&#x9;prepararResponse = global.patch(&#xD;&#xA;&#x9;&#x9;path: &quot;api/ordenes/${idOrdenGlobal}/preparada&quot;,&#xD;&#xA;&#x9;&#x9;headers: [Authorization: &quot;Bearer ${token}&quot;],&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON&#xD;&#xA;&#x9;)&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Error al intentar marcar como preparada la orden: ${e.message}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Obtener el estado de la orden&#xD;&#xA;estadoVariable = prepararResponse.data.estadoOrden&#xD;&#xA;&#xD;&#xA;return estadoVariable&#xD;&#xA;" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Object" returnTypeFixed="true">
+                  <referencedElements xmi:type="process:Data" xmi:id="_SHKVcKziEe-xkecs5ObUNw" name="idOrdenGlobal" dataType="_TayH_2uQEe-OS9FyA9wSdA"/>
+                  <referencedElements xmi:type="process:Data" xmi:id="_SHKVcaziEe-xkecs5ObUNw" name="mailCentro" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+                </expression>
               </parameters>
             </configuration>
             <outputs xmi:type="expression:Operation" xmi:id="_QYtueKgzEe-QYZ1QmhBlew">
-              <leftOperand xmi:type="expression:Expression" xmi:id="_QYtueagzEe-QYZ1QmhBlew"/>
-              <rightOperand xmi:type="expression:Expression" xmi:id="_QYtueqgzEe-QYZ1QmhBlew" name="result" content="result" type="CONNECTOR_OUTPUT_TYPE" returnType="java.lang.Object">
-                <referencedElements xmi:type="definition:Output" xmi:id="_QYtue6gzEe-QYZ1QmhBlew" name="result" type="java.lang.Object"/>
+              <leftOperand xmi:type="expression:Expression" xmi:id="_QYtueagzEe-QYZ1QmhBlew" name="estado" content="estado" type="TYPE_VARIABLE">
+                <referencedElements xmi:type="process:Data" xmi:id="_OYvHcazYEe-xkecs5ObUNw" name="estado" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+              </leftOperand>
+              <rightOperand xmi:type="expression:Expression" xmi:id="_QYtueqgzEe-QYZ1QmhBlew" name="newScript()" content="result" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT">
+                <referencedElements xmi:type="definition:Output" xmi:id="_OYvHcqzYEe-xkecs5ObUNw" name="result" type="java.lang.Object"/>
               </rightOperand>
               <operator xmi:type="expression:Operator" xmi:id="_QYtufKgzEe-QYZ1QmhBlew" type="ASSIGNMENT"/>
             </outputs>
@@ -1320,16 +1340,36 @@
                 <expression xmi:type="expression:Expression" xmi:id="_L-C59agzEe-QYZ1QmhBlew" returnType="java.util.List" returnTypeFixed="true"/>
               </parameters>
               <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_L-C59qgzEe-QYZ1QmhBlew" key="fakeScriptExpression">
-                <expression xmi:type="expression:Expression" xmi:id="_L-C596gzEe-QYZ1QmhBlew" name="newScript()" content="true" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Object" returnTypeFixed="true"/>
+                <expression xmi:type="expression:Expression" xmi:id="_L-C596gzEe-QYZ1QmhBlew" name="newScript()" content="import groovyx.net.http.RESTClient&#xD;&#xA;import groovyx.net.http.ContentType&#xD;&#xA;import groovy.json.JsonSlurper&#xD;&#xA;import groovy.json.JsonOutput&#xD;&#xA;&#xD;&#xA;// Crear cliente REST&#xD;&#xA;def global = new RESTClient('http://host.docker.internal:8082/')&#xD;&#xA;def estadoVariable = &quot;&quot;&#xD;&#xA;&#xD;&#xA;// Realizar login y obtener el token&#xD;&#xA;def loginResponse&#xD;&#xA;try {&#xD;&#xA;&#x9;loginResponse = global.post(&#xD;&#xA;&#x9;&#x9;path: 'auth/login',&#xD;&#xA;&#x9;&#x9;body: [email: mailCentro, password: '123456'],&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON&#xD;&#xA;&#x9;)&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Error al intentar login en la API global: ${e.message}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;def token = loginResponse.data.token&#xD;&#xA;&#xD;&#xA;// Preparar la orden con el token obtenido&#xD;&#xA;def prepararResponse&#xD;&#xA;try {&#xD;&#xA;&#x9;prepararResponse = global.patch(&#xD;&#xA;&#x9;&#x9;path: &quot;api/ordenes/${idOrdenGlobal}/preparar&quot;,&#xD;&#xA;&#x9;&#x9;headers: [Authorization: &quot;Bearer ${token}&quot;],&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON&#xD;&#xA;&#x9;)&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Error al intentar marcar como preparada la orden: ${e.message}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Obtener el estado de la orden&#xD;&#xA;estadoVariable = prepararResponse.data.estadoOrden&#xD;&#xA;&#xD;&#xA;return estadoVariable&#xD;&#xA;" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Object" returnTypeFixed="true">
+                  <referencedElements xmi:type="process:Data" xmi:id="_Pkj10KziEe-xkecs5ObUNw" name="mailCentro" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+                  <referencedElements xmi:type="process:Data" xmi:id="_Pkj10aziEe-xkecs5ObUNw" name="idOrdenGlobal" dataType="_TayH_2uQEe-OS9FyA9wSdA"/>
+                </expression>
               </parameters>
             </configuration>
             <outputs xmi:type="expression:Operation" xmi:id="_L-C5-KgzEe-QYZ1QmhBlew">
-              <leftOperand xmi:type="expression:Expression" xmi:id="_L-C5-agzEe-QYZ1QmhBlew"/>
-              <rightOperand xmi:type="expression:Expression" xmi:id="_L-C5-qgzEe-QYZ1QmhBlew" name="result" content="result" type="CONNECTOR_OUTPUT_TYPE" returnType="java.lang.Object">
-                <referencedElements xmi:type="definition:Output" xmi:id="_L-C5-6gzEe-QYZ1QmhBlew" name="result" type="java.lang.Object"/>
+              <leftOperand xmi:type="expression:Expression" xmi:id="_L-C5-agzEe-QYZ1QmhBlew" name="estado" content="estado" type="TYPE_VARIABLE">
+                <referencedElements xmi:type="process:Data" xmi:id="_BzuHsKzYEe-xkecs5ObUNw" name="estado" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+              </leftOperand>
+              <rightOperand xmi:type="expression:Expression" xmi:id="_L-C5-qgzEe-QYZ1QmhBlew" name="newScript()" content="result" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT">
+                <referencedElements xmi:type="definition:Output" xmi:id="_BzuHsazYEe-xkecs5ObUNw" name="result" type="java.lang.Object"/>
               </rightOperand>
               <operator xmi:type="expression:Operator" xmi:id="_L-C5_KgzEe-QYZ1QmhBlew" type="ASSIGNMENT"/>
             </outputs>
+          </connectors>
+          <connectors xmi:type="process:Connector" xmi:id="_j0sPgKzUEe-xkecs5ObUNw" name="marcar_aceptada" definitionId="scripting-groovy-script" event="ON_ENTER" definitionVersion="1.0.1">
+            <configuration xmi:type="connectorconfiguration:ConnectorConfiguration" xmi:id="_j0sPgazUEe-xkecs5ObUNw" definitionId="scripting-groovy-script" version="1.0.1" modelVersion="8">
+              <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_j0sPgqzUEe-xkecs5ObUNw" key="script">
+                <expression xmi:type="expression:Expression" xmi:id="_j0sPg6zUEe-xkecs5ObUNw" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnTypeFixed="true"/>
+              </parameters>
+              <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_j0sPhKzUEe-xkecs5ObUNw" key="variables">
+                <expression xmi:type="expression:Expression" xmi:id="_j0sPhazUEe-xkecs5ObUNw" returnType="java.util.List" returnTypeFixed="true"/>
+              </parameters>
+              <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_j0sPhqzUEe-xkecs5ObUNw" key="fakeScriptExpression">
+                <expression xmi:type="expression:Expression" xmi:id="_j0sPh6zUEe-xkecs5ObUNw" name="newScript()" content="import groovyx.net.http.RESTClient&#xD;&#xA;import groovyx.net.http.ContentType&#xD;&#xA;import groovy.json.JsonSlurper&#xD;&#xA;import groovy.json.JsonOutput&#xD;&#xA;&#xD;&#xA;def client = new RESTClient('http://host.docker.internal:8081/')&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;def loginResponse&#xD;&#xA;try {&#xD;&#xA;&#x9;loginResponse = client.post(&#xD;&#xA;&#x9;&#x9;path: 'auth/login',&#xD;&#xA;&#x9;&#x9;body: [username: &quot;bonita&quot;, password: '123456'],&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON&#xD;&#xA;&#x9;)&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Error al intentar login en la API local: ${e.message}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Verificar si el login fue exitoso&#xD;&#xA;if (loginResponse.status != 200) {&#xD;&#xA;&#x9;println &quot;Error en login local: ${loginResponse.status}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;def token= loginResponse.data.token&#xD;&#xA;&#xD;&#xA;def aceptarResponse&#xD;&#xA;&#xD;&#xA;try {&#xD;&#xA;&#x9;aceptarResponse = client.put(&#xD;&#xA;&#x9;&#x9;path: &quot;api/ordenes/${idOrdenLocal}/estado&quot;,&#xD;&#xA;&#x9;&#x9;body: [estado: &quot;ACEPTADA&quot;],&#xD;&#xA;&#x9;&#x9;headers: [Authorization: &quot;Bearer ${token}&quot;],&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON&#xD;&#xA;&#x9;)&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Error al intentar login en la API local: ${e.message}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Verificar si el login fue exitoso&#xD;&#xA;if (aceptarResponse.status != 200) {&#xD;&#xA;&#x9;println &quot;Error en la aceptación local: ${aceptarResponse.status}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Object" returnTypeFixed="true">
+                  <referencedElements xmi:type="process:Data" xmi:id="_NIJdwKziEe-xkecs5ObUNw" name="idOrdenLocal" dataType="_TayH_2uQEe-OS9FyA9wSdA"/>
+                </expression>
+              </parameters>
+            </configuration>
           </connectors>
           <loopCondition xmi:type="expression:Expression" xmi:id="_zjuWdKc9Ee-226AfJcZHIQ" name="" content="" returnType="java.lang.Boolean" returnTypeFixed="true"/>
           <loopMaximum xmi:type="expression:Expression" xmi:id="_zjuWdac9Ee-226AfJcZHIQ" name="" content="" returnType="java.lang.Integer" returnTypeFixed="true"/>
@@ -1355,16 +1395,11 @@
                 <expression xmi:type="expression:Expression" xmi:id="_zju9iac9Ee-226AfJcZHIQ" returnType="java.util.List" returnTypeFixed="true"/>
               </parameters>
               <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_zju9iqc9Ee-226AfJcZHIQ" key="fakeScriptExpression">
-                <expression xmi:type="expression:Expression" xmi:id="_zju9i6c9Ee-226AfJcZHIQ" name="newScript()" content="true" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Object" returnTypeFixed="true"/>
+                <expression xmi:type="expression:Expression" xmi:id="_zju9i6c9Ee-226AfJcZHIQ" name="newScript()" content="import groovyx.net.http.RESTClient&#xD;&#xA;import groovyx.net.http.ContentType&#xD;&#xA;import groovy.json.JsonSlurper&#xD;&#xA;import groovy.json.JsonOutput&#xD;&#xA;&#xD;&#xA;def client = new RESTClient('http://host.docker.internal:8081/')&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;def loginResponse&#xD;&#xA;try {&#xD;&#xA;&#x9;loginResponse = client.post(&#xD;&#xA;&#x9;&#x9;path: 'auth/login',&#xD;&#xA;&#x9;&#x9;body: [username: &quot;bonita&quot;, password: '123456'],&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON&#xD;&#xA;&#x9;)&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Error al intentar login en la API local: ${e.message}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Verificar si el login fue exitoso&#xD;&#xA;if (loginResponse.status != 200) {&#xD;&#xA;&#x9;println &quot;Error en login local: ${loginResponse.status}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;def token= loginResponse.data.token&#xD;&#xA;def rechazarResponse&#xD;&#xA;try {&#xD;&#xA;&#x9;rechazarResponse = client.put(&#xD;&#xA;&#x9;&#x9;path: &quot;api/ordenes/${idOrdenLocal}/estado&quot;,&#xD;&#xA;&#x9;&#x9;body: [estado: &quot;RECHAZADO&quot;],&#xD;&#xA;&#x9;&#x9;headers: [Authorization: &quot;Bearer ${token}&quot;],&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON&#xD;&#xA;&#x9;)&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Error al intentar login en la API local: ${e.message}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Verificar si el login fue exitoso&#xD;&#xA;if (rechazarResponse.status != 200) {&#xD;&#xA;&#x9;println &quot;Error en login local: ${rechazarResponse.status}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Object" returnTypeFixed="true">
+                  <referencedElements xmi:type="process:Data" xmi:id="_Ky0lIKziEe-xkecs5ObUNw" name="idOrdenLocal" dataType="_TayH_2uQEe-OS9FyA9wSdA"/>
+                </expression>
               </parameters>
             </configuration>
-            <outputs xmi:type="expression:Operation" xmi:id="_zju9jKc9Ee-226AfJcZHIQ">
-              <leftOperand xmi:type="expression:Expression" xmi:id="_zju9jac9Ee-226AfJcZHIQ"/>
-              <rightOperand xmi:type="expression:Expression" xmi:id="_zju9jqc9Ee-226AfJcZHIQ" name="result" content="result" type="CONNECTOR_OUTPUT_TYPE" returnType="java.lang.Object">
-                <referencedElements xmi:type="definition:Output" xmi:id="_zju9j6c9Ee-226AfJcZHIQ" name="result" type="java.lang.Object"/>
-              </rightOperand>
-              <operator xmi:type="expression:Operator" xmi:id="_zju9kKc9Ee-226AfJcZHIQ" type="ASSIGNMENT"/>
-            </outputs>
           </connectors>
           <loopCondition xmi:type="expression:Expression" xmi:id="_zju9kac9Ee-226AfJcZHIQ" name="" content="" returnType="java.lang.Boolean" returnTypeFixed="true"/>
           <loopMaximum xmi:type="expression:Expression" xmi:id="_zju9kqc9Ee-226AfJcZHIQ" name="" content="" returnType="java.lang.Integer" returnTypeFixed="true"/>
@@ -1381,14 +1416,113 @@
           <dynamicLabel xmi:type="expression:Expression" xmi:id="_zjwLoac9Ee-226AfJcZHIQ" name="" content="" returnTypeFixed="true"/>
           <dynamicDescription xmi:type="expression:Expression" xmi:id="_zjwLoqc9Ee-226AfJcZHIQ" name="" content="" returnTypeFixed="true"/>
           <stepSummary xmi:type="expression:Expression" xmi:id="_zjwLo6c9Ee-226AfJcZHIQ" name="" content="" returnTypeFixed="true"/>
-          <condition xmi:type="expression:Expression" xmi:id="_zjwLpKc9Ee-226AfJcZHIQ" name="1 Days 00:00:00" content="86400000L" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Long"/>
+          <condition xmi:type="expression:Expression" xmi:id="_zjwLpKc9Ee-226AfJcZHIQ" name="00:02:00" content="120000L" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Long"/>
         </elements>
         <elements xmi:type="process:StartEvent" xmi:id="__z35cKc9Ee-226AfJcZHIQ" name="Estado orden" outgoing="_uUIEMKgxEe-QYZ1QmhBlew">
           <dynamicLabel xmi:type="expression:Expression" xmi:id="__z4ggac9Ee-226AfJcZHIQ" name="" content="" returnTypeFixed="true"/>
           <dynamicDescription xmi:type="expression:Expression" xmi:id="__z4ggKc9Ee-226AfJcZHIQ" name="" content="" returnTypeFixed="true"/>
           <stepSummary xmi:type="expression:Expression" xmi:id="__z4ggqc9Ee-226AfJcZHIQ" name="" content="" returnTypeFixed="true"/>
         </elements>
+        <elements xmi:type="process:ServiceTask" xmi:id="_8EaR8KzLEe-xkecs5ObUNw" name="Marcar como  entregada" outgoing="_8El4IKzLEe-xkecs5ObUNw" incoming="_3Jb4AKgxEe-QYZ1QmhBlew">
+          <dynamicLabel xmi:type="expression:Expression" xmi:id="_8Ea5AazLEe-xkecs5ObUNw" name="" content="" returnTypeFixed="true"/>
+          <dynamicDescription xmi:type="expression:Expression" xmi:id="_8Ea5AKzLEe-xkecs5ObUNw" name="" content="" returnTypeFixed="true"/>
+          <stepSummary xmi:type="expression:Expression" xmi:id="_8Ea5AqzLEe-xkecs5ObUNw" name="" content="" returnTypeFixed="true"/>
+          <connectors xmi:type="process:Connector" xmi:id="_0HT6sKzaEe-xkecs5ObUNw" name="entregar_orden_local" definitionId="scripting-groovy-script" event="ON_FINISH" definitionVersion="1.0.1">
+            <configuration xmi:type="connectorconfiguration:ConnectorConfiguration" xmi:id="_0HT6sazaEe-xkecs5ObUNw" definitionId="scripting-groovy-script" version="1.0.1" modelVersion="8">
+              <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_0HT6sqzaEe-xkecs5ObUNw" key="script">
+                <expression xmi:type="expression:Expression" xmi:id="_0HT6s6zaEe-xkecs5ObUNw" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnTypeFixed="true"/>
+              </parameters>
+              <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_0HT6tKzaEe-xkecs5ObUNw" key="variables">
+                <expression xmi:type="expression:Expression" xmi:id="_0HT6tazaEe-xkecs5ObUNw" returnType="java.util.List" returnTypeFixed="true"/>
+              </parameters>
+              <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_0HT6tqzaEe-xkecs5ObUNw" key="fakeScriptExpression">
+                <expression xmi:type="expression:Expression" xmi:id="_0HT6t6zaEe-xkecs5ObUNw" name="newScript()" content="import groovyx.net.http.RESTClient&#xD;&#xA;import groovyx.net.http.ContentType&#xD;&#xA;import groovy.json.JsonSlurper&#xD;&#xA;import groovy.json.JsonOutput&#xD;&#xA;&#xD;&#xA;def client = new RESTClient('http://host.docker.internal:8081/')&#xD;&#xA;&#xD;&#xA;&#xD;&#xA;def loginResponse&#xD;&#xA;try {&#xD;&#xA;&#x9;loginResponse = client.post(&#xD;&#xA;&#x9;&#x9;path: 'auth/login',&#xD;&#xA;&#x9;&#x9;body: [username: &quot;bonita&quot;, password: '123456'],&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON&#xD;&#xA;&#x9;)&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Error al intentar login en la API local: ${e.message}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Verificar si el login fue exitoso&#xD;&#xA;if (loginResponse.status != 200) {&#xD;&#xA;&#x9;println &quot;Error en login local: ${loginResponse.status}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;def token= loginResponse.data.token&#xD;&#xA;&#xD;&#xA;def entregarResponse&#xD;&#xA;try {&#xD;&#xA;&#x9;entregarResponse = client.put(&#xD;&#xA;&#x9;&#x9;path: &quot;api/ordenes/${idOrdenLocal}/estado&quot;,&#xD;&#xA;&#x9;&#x9;body: [estado: &quot;ENTREGADA&quot;],&#xD;&#xA;&#x9;&#x9;headers: [Authorization: &quot;Bearer ${token}&quot;],&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON&#xD;&#xA;&#x9;)&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;&#x9;println &quot;Error al intentar login en la API local: ${e.message}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;// Verificar si el login fue exitoso&#xD;&#xA;if (entregarResponse.status != 200) {&#xD;&#xA;&#x9;println &quot;Error en la entrega: ${entregarResponse.status}&quot;&#xD;&#xA;&#x9;return&#xD;&#xA;}" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Object" returnTypeFixed="true">
+                  <referencedElements xmi:type="process:Data" xmi:id="_bDDeIKz9Ee-tTL9y2ARAMA" name="idOrdenLocal" dataType="_TayH_2uQEe-OS9FyA9wSdA"/>
+                </expression>
+              </parameters>
+            </configuration>
+          </connectors>
+          <loopCondition xmi:type="expression:Expression" xmi:id="_8Ea5A6zLEe-xkecs5ObUNw" name="" content="" returnType="java.lang.Boolean" returnTypeFixed="true"/>
+          <loopMaximum xmi:type="expression:Expression" xmi:id="_8Ea5BKzLEe-xkecs5ObUNw" name="" content="" returnType="java.lang.Integer" returnTypeFixed="true"/>
+          <cardinalityExpression xmi:type="expression:Expression" xmi:id="_8Ea5BazLEe-xkecs5ObUNw" name="" content="" returnType="java.lang.Integer" returnTypeFixed="true"/>
+          <iteratorExpression xmi:type="expression:Expression" xmi:id="_8Ea5B6zLEe-xkecs5ObUNw" name="multiInstanceIterator" content="multiInstanceIterator" type="MULTIINSTANCE_ITERATOR_TYPE" returnType="java.lang.Object" returnTypeFixed="true"/>
+          <completionCondition xmi:type="expression:Expression" xmi:id="_8Ea5BqzLEe-xkecs5ObUNw" name="" content="" returnType="java.lang.Boolean" returnTypeFixed="true"/>
+        </elements>
       </elements>
+      <data xmi:type="process:Data" xmi:id="_UGwD4Ky8Ee-xkecs5ObUNw" name="orden" dataType="_TayIAWuQEe-OS9FyA9wSdA">
+        <defaultValue xmi:type="expression:Expression" xmi:id="_UGwD4ay8Ee-xkecs5ObUNw" content=""/>
+      </data>
+      <data xmi:type="process:Data" xmi:id="_BZ9_MKy9Ee-xkecs5ObUNw" name="idOrdenLocal" dataType="_TayH_2uQEe-OS9FyA9wSdA">
+        <defaultValue xmi:type="expression:Expression" xmi:id="_BZ9_May9Ee-xkecs5ObUNw" content="" returnType="java.lang.Long"/>
+      </data>
+      <data xmi:type="process:Data" xmi:id="_CI9zMKy9Ee-xkecs5ObUNw" name="idOrdenGlobal" dataType="_TayH_2uQEe-OS9FyA9wSdA">
+        <defaultValue xmi:type="expression:Expression" xmi:id="_CI9zMay9Ee-xkecs5ObUNw" content="" returnType="java.lang.Long"/>
+      </data>
+      <data xmi:type="process:Data" xmi:id="_O73BcKy-Ee-xkecs5ObUNw" name="estado" dataType="_TayIAWuQEe-OS9FyA9wSdA">
+        <defaultValue xmi:type="expression:Expression" xmi:id="_O73Bcay-Ee-xkecs5ObUNw" content=""/>
+      </data>
+      <data xmi:type="process:Data" xmi:id="_bGn4sKy_Ee-xkecs5ObUNw" name="mailCentro" dataType="_TayIAWuQEe-OS9FyA9wSdA">
+        <defaultValue xmi:type="expression:Expression" xmi:id="_bGn4say_Ee-xkecs5ObUNw" content=""/>
+      </data>
+      <connectors xmi:type="process:Connector" xmi:id="_2pKvEKy8Ee-xkecs5ObUNw" name="parsear_orden" definitionId="scripting-groovy-script" event="ON_ENTER" definitionVersion="1.0.1">
+        <configuration xmi:type="connectorconfiguration:ConnectorConfiguration" xmi:id="_2pKvEay8Ee-xkecs5ObUNw" definitionId="scripting-groovy-script" version="1.0.1" modelVersion="8">
+          <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_2pKvEqy8Ee-xkecs5ObUNw" key="script">
+            <expression xmi:type="expression:Expression" xmi:id="_2pKvE6y8Ee-xkecs5ObUNw" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnTypeFixed="true"/>
+          </parameters>
+          <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_2pKvFKy8Ee-xkecs5ObUNw" key="variables">
+            <expression xmi:type="expression:Expression" xmi:id="_2pKvFay8Ee-xkecs5ObUNw" returnType="java.util.List" returnTypeFixed="true"/>
+          </parameters>
+          <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_2pKvFqy8Ee-xkecs5ObUNw" key="fakeScriptExpression">
+            <expression xmi:type="expression:Expression" xmi:id="_2pKvF6y8Ee-xkecs5ObUNw" name="newScript()" content="import groovy.json.JsonSlurper&#xD;&#xA;import groovy.json.JsonOutput&#xD;&#xA;def orden_parseada= new JsonSlurper().parseText(orden)&#xD;&#xA;// Verificar y manipular el resultado&#xD;&#xA;println &quot;Contenido parseado: ${orden_parseada}&quot;&#xD;&#xA;return orden_parseada" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Object" returnTypeFixed="true">
+              <referencedElements xmi:type="process:Data" xmi:id="_GaypMKzHEe-xkecs5ObUNw" name="orden" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+            </expression>
+          </parameters>
+        </configuration>
+        <outputs xmi:type="expression:Operation" xmi:id="_2pKvGay8Ee-xkecs5ObUNw">
+          <leftOperand xmi:type="expression:Expression" xmi:id="_2pKvGqy8Ee-xkecs5ObUNw" name="idOrdenGlobal" content="idOrdenGlobal" type="TYPE_VARIABLE" returnType="java.lang.Long">
+            <referencedElements xmi:type="process:Data" xmi:id="_wJReAKy9Ee-xkecs5ObUNw" name="idOrdenGlobal" dataType="_TayH_2uQEe-OS9FyA9wSdA"/>
+          </leftOperand>
+          <rightOperand xmi:type="expression:Expression" xmi:id="_2pKvG6y8Ee-xkecs5ObUNw" name="newScript()" content="result.idGlobalOrden" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Long">
+            <referencedElements xmi:type="definition:Output" xmi:id="_-MFRcKy9Ee-xkecs5ObUNw" name="result" type="java.lang.Object"/>
+          </rightOperand>
+          <operator xmi:type="expression:Operator" xmi:id="_2pKvHay8Ee-xkecs5ObUNw" type="ASSIGNMENT"/>
+        </outputs>
+        <outputs xmi:type="expression:Operation" xmi:id="_-7yFgay8Ee-xkecs5ObUNw">
+          <leftOperand xmi:type="expression:Expression" xmi:id="_-7yFgqy8Ee-xkecs5ObUNw" name="idOrdenLocal" content="idOrdenLocal" type="TYPE_VARIABLE" returnType="java.lang.Long">
+            <referencedElements xmi:type="process:Data" xmi:id="_wJReAqy9Ee-xkecs5ObUNw" name="idOrdenLocal" dataType="_TayH_2uQEe-OS9FyA9wSdA"/>
+          </leftOperand>
+          <rightOperand xmi:type="expression:Expression" xmi:id="_-7yFg6y8Ee-xkecs5ObUNw" name="newScript()" content="result.idLocalOrden" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Long">
+            <referencedElements xmi:type="definition:Output" xmi:id="_-MF4gKy9Ee-xkecs5ObUNw" name="result" type="java.lang.Object"/>
+          </rightOperand>
+          <operator xmi:type="expression:Operator" xmi:id="_-7yFhKy8Ee-xkecs5ObUNw" type="ASSIGNMENT"/>
+        </outputs>
+        <outputs xmi:type="expression:Operation" xmi:id="_fkRvwKy_Ee-xkecs5ObUNw">
+          <leftOperand xmi:type="expression:Expression" xmi:id="_fkRvway_Ee-xkecs5ObUNw" name="mailCentro" content="mailCentro" type="TYPE_VARIABLE">
+            <referencedElements xmi:type="process:Data" xmi:id="_fkRvwqy_Ee-xkecs5ObUNw" name="mailCentro" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+          </leftOperand>
+          <rightOperand xmi:type="expression:Expression" xmi:id="_fkRvw6y_Ee-xkecs5ObUNw" name="newScript()" content="result.mailCentro" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT">
+            <referencedElements xmi:type="definition:Output" xmi:id="_fkRvxKy_Ee-xkecs5ObUNw" name="result" type="java.lang.Object"/>
+          </rightOperand>
+          <operator xmi:type="expression:Operator" xmi:id="_fkRvxay_Ee-xkecs5ObUNw" type="ASSIGNMENT"/>
+        </outputs>
+      </connectors>
+      <connectors xmi:type="process:Connector" xmi:id="_IW804Ky8Ee-xkecs5ObUNw" name="asociar_tarea" definitionId="scripting-groovy-script" event="ON_ENTER" definitionVersion="1.0.1">
+        <configuration xmi:type="connectorconfiguration:ConnectorConfiguration" xmi:id="_IW804ay8Ee-xkecs5ObUNw" definitionId="scripting-groovy-script" version="1.0.1" modelVersion="8">
+          <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_IW804qy8Ee-xkecs5ObUNw" key="script">
+            <expression xmi:type="expression:Expression" xmi:id="_IW8046y8Ee-xkecs5ObUNw" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnTypeFixed="true"/>
+          </parameters>
+          <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_IW805Ky8Ee-xkecs5ObUNw" key="variables">
+            <expression xmi:type="expression:Expression" xmi:id="_IW805ay8Ee-xkecs5ObUNw" returnType="java.util.List" returnTypeFixed="true"/>
+          </parameters>
+          <parameters xmi:type="connectorconfiguration:ConnectorParameter" xmi:id="_IW805qy8Ee-xkecs5ObUNw" key="fakeScriptExpression">
+            <expression xmi:type="expression:Expression" xmi:id="_IW8056y8Ee-xkecs5ObUNw" name="newScript()" content="import groovyx.net.http.RESTClient&#xD;&#xA;import groovyx.net.http.ContentType&#xD;&#xA;import groovy.json.JsonSlurper&#xD;&#xA;import groovy.json.JsonOutput&#xD;&#xA;&#xD;&#xA;def client = new RESTClient('http://host.docker.internal:8081/')&#xD;&#xA;try {&#xD;&#xA;&#x9;def response = client.post(&#xD;&#xA;&#x9;&#x9;path: 'auth/login',  // El endpoint de login&#xD;&#xA;&#x9;&#x9;body: [username: 'bonita', password: '123456'], // Datos de autenticación&#xD;&#xA;&#x9;&#x9;requestContentType: ContentType.JSON  // Tipo de contenido de la solicitud&#xD;&#xA;&#x9;)&#xD;&#xA;&#xD;&#xA;&#x9;if (response.status == 200) {&#xD;&#xA;&#x9;&#x9;String token = response.data.token  // Asegúrate de que `token` es una propiedad válida de la respuesta&#xD;&#xA;&#x9;&#x9;if (token) {&#xD;&#xA;&#x9;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;try {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;// Obtener información del stock para este material&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;def getResponse = client.post(&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;path: &quot;api/ordenes/asociar-bonita/${idOrdenLocal}&quot;,&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;headers: [Authorization: &quot;Bearer ${token}&quot;],&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;contentType: ContentType.JSON,&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;body: [idProceso : processInstanceId,&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;   idRootProceso:rootProcessInstanceId&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;&#x9;]&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;)&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;&#x9; catch (Exception e) {&#xD;&#xA;&#x9;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#xD;&#xA;&#x9;&#x9;} else {&#xD;&#xA;&#x9;&#x9;&#x9;println &quot;Token no recibido&quot;&#xD;&#xA;&#x9;&#x9;}&#xD;&#xA;&#x9;&#x9;&#x9;&#xD;&#xA;&#x9;&#xD;&#xA;} catch (Exception e) {&#xD;&#xA;}&#xD;&#xA;&#xD;&#xA;" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Object" returnTypeFixed="true">
+              <referencedElements xmi:type="expression:Expression" xmi:id="_QP8oQKz6Ee-tTL9y2ARAMA" name="processInstanceId" content="processInstanceId" type="TYPE_ENGINE_CONSTANT" returnType="java.lang.Long"/>
+              <referencedElements xmi:type="process:Data" xmi:id="_QP9PUKz6Ee-tTL9y2ARAMA" name="idOrdenLocal" dataType="_TayH_2uQEe-OS9FyA9wSdA"/>
+              <referencedElements xmi:type="expression:Expression" xmi:id="_QP92YKz6Ee-tTL9y2ARAMA" name="rootProcessInstanceId" content="rootProcessInstanceId" type="TYPE_ENGINE_CONSTANT" returnType="java.lang.Long"/>
+            </expression>
+          </parameters>
+        </configuration>
+      </connectors>
       <formMapping xmi:type="process:FormMapping" xmi:id="_oehjr6c9Ee-226AfJcZHIQ" type="NONE">
         <targetForm xmi:type="expression:Expression" xmi:id="_oehjsKc9Ee-226AfJcZHIQ" name="" content="" type="FORM_REFERENCE_TYPE" returnTypeFixed="true"/>
       </formMapping>
@@ -1405,11 +1539,15 @@
       </connections>
       <connections xmi:type="process:SequenceFlow" xmi:id="_zjyn4Kc9Ee-226AfJcZHIQ" name="Rechazada" target="_zju9gKc9Ee-226AfJcZHIQ" source="_zjr6MKc9Ee-226AfJcZHIQ">
         <decisionTable xmi:type="decision:DecisionTable" xmi:id="_zjyn4ac9Ee-226AfJcZHIQ"/>
-        <condition xmi:type="expression:Expression" xmi:id="_zjyn4qc9Ee-226AfJcZHIQ" name="newScript()" content="false" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Boolean" returnTypeFixed="true"/>
+        <condition xmi:type="expression:Expression" xmi:id="_zjyn4qc9Ee-226AfJcZHIQ" name="newScript()" content="estado==&quot;RECHAZADA&quot;" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Boolean" returnTypeFixed="true">
+          <referencedElements xmi:type="process:Data" xmi:id="_Qk2RIKzBEe-xkecs5ObUNw" name="estado" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+        </condition>
       </connections>
       <connections xmi:type="process:SequenceFlow" xmi:id="_zjzO8Kc9Ee-226AfJcZHIQ" name="Pendiente/Enviada" target="_zjwLoKc9Ee-226AfJcZHIQ" source="_zjr6MKc9Ee-226AfJcZHIQ">
         <decisionTable xmi:type="decision:DecisionTable" xmi:id="_zjzO8ac9Ee-226AfJcZHIQ"/>
-        <condition xmi:type="expression:Expression" xmi:id="_zjzO8qc9Ee-226AfJcZHIQ" name="true" content="true" returnType="java.lang.Boolean" returnTypeFixed="true"/>
+        <condition xmi:type="expression:Expression" xmi:id="_zjzO8qc9Ee-226AfJcZHIQ" name="newScript()" content="estado=='PENDIENTE' || estado==&quot;ENVIADA&quot;" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Boolean" returnTypeFixed="true">
+          <referencedElements xmi:type="process:Data" xmi:id="_LYTTwKzBEe-xkecs5ObUNw" name="estado" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+        </condition>
       </connections>
       <connections xmi:type="process:SequenceFlow" xmi:id="_zjz2AKc9Ee-226AfJcZHIQ" target="_zjtIUac9Ee-226AfJcZHIQ" source="_zjtvYKc9Ee-226AfJcZHIQ">
         <decisionTable xmi:type="decision:DecisionTable" xmi:id="_zjz2Aac9Ee-226AfJcZHIQ"/>
@@ -1435,9 +1573,15 @@
         <decisionTable xmi:type="decision:DecisionTable" xmi:id="_1jEXIagxEe-QYZ1QmhBlew"/>
         <condition xmi:type="expression:Expression" xmi:id="_1jEXIqgxEe-QYZ1QmhBlew" name="" content="" returnType="java.lang.Boolean" returnTypeFixed="true"/>
       </connections>
-      <connections xmi:type="process:SequenceFlow" xmi:id="_3Jb4AKgxEe-QYZ1QmhBlew" name="Entregada" target="_zjr6OKc9Ee-226AfJcZHIQ" source="_zjr6MKc9Ee-226AfJcZHIQ">
+      <connections xmi:type="process:SequenceFlow" xmi:id="_3Jb4AKgxEe-QYZ1QmhBlew" name="Entregada" target="_8EaR8KzLEe-xkecs5ObUNw" source="_zjr6MKc9Ee-226AfJcZHIQ">
         <decisionTable xmi:type="decision:DecisionTable" xmi:id="_3JcfEKgxEe-QYZ1QmhBlew"/>
-        <condition xmi:type="expression:Expression" xmi:id="_3JcfEagxEe-QYZ1QmhBlew" name="newScript()" content="false" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Boolean" returnTypeFixed="true"/>
+        <condition xmi:type="expression:Expression" xmi:id="_3JcfEagxEe-QYZ1QmhBlew" name="newScript()" content="estado==&quot;ENTREGADA&quot;" interpreter="GROOVY" type="TYPE_READ_ONLY_SCRIPT" returnType="java.lang.Boolean" returnTypeFixed="true">
+          <referencedElements xmi:type="process:Data" xmi:id="_aW9poKz8Ee-tTL9y2ARAMA" name="estado" dataType="_TayIAWuQEe-OS9FyA9wSdA"/>
+        </condition>
+      </connections>
+      <connections xmi:type="process:SequenceFlow" xmi:id="_8El4IKzLEe-xkecs5ObUNw" target="_zjr6OKc9Ee-226AfJcZHIQ" source="_8EaR8KzLEe-xkecs5ObUNw">
+        <decisionTable xmi:type="decision:DecisionTable" xmi:id="_8El4IazLEe-xkecs5ObUNw"/>
+        <condition xmi:type="expression:Expression" xmi:id="_8EmfMKzLEe-xkecs5ObUNw" name="" returnType="java.lang.Boolean" returnTypeFixed="true"/>
       </connections>
       <actors xmi:type="process:Actor" xmi:id="_zjtIUKc9Ee-226AfJcZHIQ" name="Empleado"/>
       <contract xmi:type="process:Contract" xmi:id="_oehjs6c9Ee-226AfJcZHIQ"/>
@@ -1729,7 +1873,7 @@
               <children xmi:type="notation:DecorationNode" xmi:id="_zjr6Pac9Ee-226AfJcZHIQ" type="5025" element="_zjr6OKc9Ee-226AfJcZHIQ">
                 <layoutConstraint xmi:type="notation:Location" xmi:id="_zjr6Pqc9Ee-226AfJcZHIQ" x="-1" y="17"/>
               </children>
-              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_zjr6P6c9Ee-226AfJcZHIQ" x="1271" y="10"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_zjr6P6c9Ee-226AfJcZHIQ" x="2680" y="31"/>
             </children>
             <children xmi:type="notation:Shape" xmi:id="_zjtIXqc9Ee-226AfJcZHIQ" type="3005" element="_zjtIUac9Ee-226AfJcZHIQ" fontName="Segoe UI" fillColor="14334392" lineColor="10710316">
               <children xmi:type="notation:DecorationNode" xmi:id="_zjtIX6c9Ee-226AfJcZHIQ" type="5005" element="_zjtIUac9Ee-226AfJcZHIQ"/>
@@ -1765,12 +1909,16 @@
               </children>
               <layoutConstraint xmi:type="notation:Bounds" xmi:id="__z5Hkac9Ee-226AfJcZHIQ" x="441" y="114"/>
             </children>
+            <children xmi:type="notation:Shape" xmi:id="_8EbgEKzLEe-xkecs5ObUNw" type="3027" element="_8EaR8KzLEe-xkecs5ObUNw" fontName="Segoe UI" fillColor="14334392" lineColor="10710316">
+              <children xmi:type="notation:DecorationNode" xmi:id="_8EcHIKzLEe-xkecs5ObUNw" type="5017"/>
+              <layoutConstraint xmi:type="notation:Bounds" xmi:id="_8EbgEazLEe-xkecs5ObUNw" x="2277" y="17" width="234" height="117"/>
+            </children>
           </children>
           <styles xmi:type="notation:DescriptionStyle" xmi:id="_qU3aMac9Ee-226AfJcZHIQ"/>
           <styles xmi:type="notation:FontStyle" xmi:id="_qU3aMqc9Ee-226AfJcZHIQ" fontName="Segoe UI"/>
           <styles xmi:type="notation:LineStyle" xmi:id="_qU3aM6c9Ee-226AfJcZHIQ"/>
           <styles xmi:type="notation:FillStyle" xmi:id="_qU3aN6c9Ee-226AfJcZHIQ"/>
-          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_qU3aNKc9Ee-226AfJcZHIQ" x="58" y="10" width="2822" height="520"/>
+          <layoutConstraint xmi:type="notation:Bounds" xmi:id="_qU3aNKc9Ee-226AfJcZHIQ" x="58" y="10" width="2822" height="670"/>
         </children>
       </children>
       <styles xmi:type="notation:DescriptionStyle" xmi:id="_oeixwac9Ee-226AfJcZHIQ"/>
@@ -2121,12 +2269,12 @@
       <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_1jE-MqgxEe-QYZ1QmhBlew" points="[-83, 48, 1173, 29]$[-83, 256, 1173, 237]$[-1256, 256, 0, 237]$[-1256, 62, 0, 43]"/>
       <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_1jFlQKgxEe-QYZ1QmhBlew" id="(1.0,0.4146341463414634)"/>
     </edges>
-    <edges xmi:type="notation:Connector" xmi:id="_3Jjz0KgxEe-QYZ1QmhBlew" type="4001" element="_3Jb4AKgxEe-QYZ1QmhBlew" source="_zjr6NKc9Ee-226AfJcZHIQ" target="_zjr6PKc9Ee-226AfJcZHIQ" roundedBendpointsRadius="10" routing="Rectilinear">
+    <edges xmi:type="notation:Connector" xmi:id="_3Jjz0KgxEe-QYZ1QmhBlew" type="4001" element="_3Jb4AKgxEe-QYZ1QmhBlew" source="_zjr6NKc9Ee-226AfJcZHIQ" target="_8EbgEKzLEe-xkecs5ObUNw" roundedBendpointsRadius="10" routing="Rectilinear">
       <children xmi:type="notation:DecorationNode" xmi:id="_3Jka4KgxEe-QYZ1QmhBlew" type="6001">
         <layoutConstraint xmi:type="notation:Location" xmi:id="_3Jka4agxEe-QYZ1QmhBlew" y="-10"/>
       </children>
       <styles xmi:type="notation:FontStyle" xmi:id="_3Jjz0agxEe-QYZ1QmhBlew" fontName="Segoe UI"/>
-      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_3Jjz0qgxEe-QYZ1QmhBlew" points="[-11, 0, -1469, 26]$[1453, -12, -5, 14]"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_3Jjz0qgxEe-QYZ1QmhBlew" points="[-22, -31, -1135, 60]$[-22, -103, -1135, -12]$[1063, -103, -50, -12]"/>
       <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_3JlpAKgxEe-QYZ1QmhBlew" id="(1.0,0.7209302325581395)"/>
     </edges>
     <edges xmi:type="notation:Connector" xmi:id="_FqzIUKg1Ee-QYZ1QmhBlew" type="4001" element="_FqyhQKg1Ee-QYZ1QmhBlew" source="_oXQMN6qZEe-xxKrRyVnvMA" target="_COloZac-Ee-226AfJcZHIQ" roundedBendpointsRadius="10" routing="Rectilinear">
@@ -2143,6 +2291,13 @@
       <styles xmi:type="notation:FontStyle" xmi:id="_maX94aqbEe-xxKrRyVnvMA" fontName="Segoe UI"/>
       <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_maX94qqbEe-xxKrRyVnvMA" points="[0, 0, -124, 101]$[62, -46, -62, 55]"/>
       <sourceAnchor xmi:type="notation:IdentityAnchor" xmi:id="_maZzEKqbEe-xxKrRyVnvMA" id="(1.0,0.375)"/>
+    </edges>
+    <edges xmi:type="notation:Connector" xmi:id="_8EmfMazLEe-xkecs5ObUNw" type="4001" element="_8El4IKzLEe-xkecs5ObUNw" source="_8EbgEKzLEe-xkecs5ObUNw" target="_zjr6PKc9Ee-226AfJcZHIQ" roundedBendpointsRadius="10" routing="Rectilinear">
+      <children xmi:type="notation:DecorationNode" xmi:id="_8EnGQKzLEe-xkecs5ObUNw" type="6001">
+        <layoutConstraint xmi:type="notation:Location" xmi:id="_8EnGQazLEe-xkecs5ObUNw" y="-10"/>
+      </children>
+      <styles xmi:type="notation:FontStyle" xmi:id="_8EmfMqzLEe-xkecs5ObUNw" fontName="Segoe UI"/>
+      <bendpoints xmi:type="notation:RelativeBendpoints" xmi:id="_8EmfM6zLEe-xkecs5ObUNw" points="[0, 0, 0, 0]$[0, 0, 0, 0]"/>
     </edges>
   </notation:Diagram>
 </xmi:XMI>
